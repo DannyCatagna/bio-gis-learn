@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, AlertTriangle, Lightbulb, Loader2, Send, RotateCcw } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface GradingResult {
   puntajeGlobal: number;
@@ -15,36 +17,6 @@ interface GradingResult {
   areasMejora: string;
   recomendacion: string;
 }
-
-// TODO: Replace with actual OpenAI/Gemini API call
-// TODO: Inject "System Prompt Rubric" here with evaluation criteria
-// Example system prompt: "Eres un evaluador académico de SIG. Evalúa el proyecto del estudiante
-// según: 1) Precisión Espacial (uso correcto de capas, coordenadas, herramientas GIS),
-// 2) Argumentación Biológica (calidad del análisis de biodiversidad y conservación).
-// Devuelve un JSON con puntajeGlobal (0-100), precisionEspacial (0-100),
-// argumentacionBiologica (0-100), puntosFuertes, areasMejora, recomendacion."
-const mockEvaluateWithAI = async (
-  _nombre: string,
-  enlace: string,
-  justificacion: string
-): Promise<GradingResult> => {
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-
-  const hasUrl = enlace.includes("earth.google.com") || enlace.includes("maate");
-  const justLength = justificacion.length;
-
-  return {
-    puntajeGlobal: hasUrl && justLength > 100 ? 85 : justLength > 50 ? 68 : 45,
-    precisionEspacial: hasUrl ? 82 : 40,
-    argumentacionBiologica: justLength > 100 ? 88 : justLength > 50 ? 65 : 35,
-    puntosFuertes:
-      "Identificación correcta de las áreas protegidas del SNAP. Uso adecuado de capas vectoriales para delimitar zonas de conservación. La narrativa demuestra comprensión de los patrones de distribución de especies endémicas.",
-    areasMejora:
-      "Falta mayor profundidad en el análisis de conectividad ecológica entre fragmentos de hábitat. Se recomienda incorporar datos cuantitativos de tasas de deforestación para fortalecer la argumentación.",
-    recomendacion:
-      "Integrar un análisis de buffer zones alrededor de las áreas protegidas para evaluar el impacto de actividades antropogénicas. Considerar el uso de índices de biodiversidad (Shannon-Wiener) en el análisis espacial.",
-  };
-};
 
 const ScoreCircle = ({ score }: { score: number }) => {
   const radius = 54;
@@ -77,17 +49,33 @@ const Evaluacion = () => {
   const [justificacion, setJustificacion] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<GradingResult | null>(null);
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setResult(null);
     try {
-      // TODO: Replace mockEvaluateWithAI with real API call to edge function
-      const res = await mockEvaluateWithAI(nombre, enlace, justificacion);
-      setResult(res);
-    } catch {
-      console.error("Error evaluating");
+      const { data, error } = await supabase.functions.invoke("evaluate-project", {
+        body: { nombre, enlace, justificacion },
+      });
+
+      if (error) {
+        throw new Error(error.message || "Error al evaluar el proyecto");
+      }
+
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
+      setResult(data as GradingResult);
+    } catch (err: any) {
+      console.error("Error evaluating:", err);
+      toast({
+        title: "Error en la evaluación",
+        description: err.message || "No se pudo completar la evaluación. Intenta de nuevo.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -118,7 +106,6 @@ const Evaluacion = () => {
           <p className="text-muted-foreground">Análisis generado por el Sistema de Calificación con IA</p>
         </div>
 
-        {/* Global Score */}
         <Card>
           <CardHeader className="text-center pb-2">
             <CardTitle className="text-lg">Puntaje Global</CardTitle>
@@ -128,7 +115,6 @@ const Evaluacion = () => {
           </CardContent>
         </Card>
 
-        {/* Criteria */}
         <div className="grid md:grid-cols-2 gap-4">
           <Card>
             <CardHeader className="pb-2">
@@ -156,7 +142,6 @@ const Evaluacion = () => {
           </Card>
         </div>
 
-        {/* Detailed Feedback */}
         <div className="space-y-4">
           <Card className="border-primary/20 bg-primary/5">
             <CardContent className="pt-6">
