@@ -6,6 +6,7 @@ const navItems = [
   { label: "Inicio", path: "/" },
   { label: "Introducción SIG", path: "/introduccion" },
   { label: "Guías Didácticas", path: "/guias" },
+  { label: "Mapa Interactivo", path: "/mapa" },
   { label: "Evaluación", path: "/evaluacion" },
 ];
 
