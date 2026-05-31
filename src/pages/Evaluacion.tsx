@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -50,6 +50,26 @@ const Evaluacion = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<GradingResult | null>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem("biosig:evaluacion-prefill");
+      if (raw) {
+        const { justificacion: j, guiaTitulo } = JSON.parse(raw);
+        if (j) setJustificacion(j);
+        if (guiaTitulo) {
+          toast({
+            title: "Guía cargada",
+            description: `Respuestas de "${guiaTitulo}" listas para evaluar.`,
+          });
+        }
+        sessionStorage.removeItem("biosig:evaluacion-prefill");
+      }
+    } catch {
+      /* ignore */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

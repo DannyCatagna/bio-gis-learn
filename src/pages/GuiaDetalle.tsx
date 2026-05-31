@@ -1,73 +1,26 @@
-import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, BookOpen, Target, Route, PenLine } from "lucide-react";
+import { useMemo } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, BookOpen, CheckCircle2, Lightbulb, FileText, Brain, Send, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-const workshopData: Record<string, { title: string; description: string; ficha: string; reto: string; pasos: string[]; cierre: string }> = {
-  "1": {
-    title: "Taller 1: Distribución Endémica",
-    description: "Mapeo de especies endémicas del Ecuador",
-    ficha: "Objetivo: Localizar y representar geográficamente la distribución de especies endémicas en las regiones biogeográficas del Ecuador usando capas vectoriales y bases de datos de biodiversidad.",
-    reto: "¿Cuáles regiones del Ecuador concentran la mayor cantidad de especies endémicas y cómo se relacionan con las áreas protegidas existentes?",
-    pasos: [
-      "Cargar la capa de regiones biogeográficas del Ecuador en el visor SIG.",
-      "Importar la base de datos de especies endémicas y vincularla con las coordenadas geográficas.",
-      "Generar un mapa de densidad de especies endémicas por región.",
-    ],
-    cierre: "Analiza críticamente si las áreas protegidas actuales cubren las zonas de mayor endemismo. Identifica vacíos de conservación.",
-  },
-  "2": {
-    title: "Taller 2: Amenazas y Deforestación",
-    description: "Análisis multitemporal de cobertura vegetal",
-    ficha: "Objetivo: Evaluar las tasas de deforestación entre 2000 y 2020 en zonas de amortiguamiento de áreas protegidas mediante el análisis de imágenes satelitales.",
-    reto: "¿Cómo ha cambiado la cobertura vegetal en las zonas de amortiguamiento del Parque Nacional Yasuní en las últimas dos décadas?",
-    pasos: [
-      "Descargar imágenes de cobertura vegetal de Global Forest Watch para los años 2000 y 2020.",
-      "Delimitar las zonas de amortiguamiento del área protegida seleccionada.",
-      "Calcular la diferencia de cobertura vegetal y generar un mapa de cambio.",
-    ],
-    cierre: "Elabora conclusiones sobre los principales factores de deforestación y propón estrategias de mitigación basadas en evidencia espacial.",
-  },
-  "3": {
-    title: "Taller 3: Límites del SNAP",
-    description: "Evaluación del Sistema Nacional de Áreas Protegidas",
-    ficha: "Objetivo: Evaluar la representatividad ecosistémica del SNAP mediante análisis de cobertura y vacíos de conservación.",
-    reto: "¿Qué ecosistemas del Ecuador continental se encuentran subrepresentados dentro del Sistema Nacional de Áreas Protegidas?",
-    pasos: [
-      "Cargar los límites oficiales de las áreas protegidas del SNAP.",
-      "Superponer la capa de ecosistemas del Ecuador para identificar intersecciones.",
-      "Calcular el porcentaje de cada ecosistema dentro de áreas protegidas.",
-    ],
-    cierre: "Determina qué ecosistemas requieren mayor protección y propón posibles ampliaciones o nuevas áreas protegidas.",
-  },
-  "4": {
-    title: "Taller 4: Análisis de Superposición",
-    description: "Superposición espacial de variables de conservación",
-    ficha: "Objetivo: Realizar un análisis de superposición espacial entre áreas protegidas, zonas de deforestación y distribución de especies prioritarias.",
-    reto: "¿Dónde se concentran las mayores presiones sobre la biodiversidad dentro del territorio ecuatoriano?",
-    pasos: [
-      "Integrar capas de áreas protegidas, deforestación y distribución de especies prioritarias.",
-      "Ejecutar un análisis de superposición (overlay) para identificar zonas de conflicto.",
-      "Clasificar las zonas resultantes según nivel de prioridad de conservación.",
-    ],
-    cierre: "Elabora un mapa final de prioridades de conservación y argumenta las decisiones tomadas con base en los datos espaciales.",
-  },
-};
-
-const sidebarSections = [
-  { icon: BookOpen, label: "Ficha Técnica", key: "ficha" as const },
-  { icon: Target, label: "Reto Geoespacial", key: "reto" as const },
-  { icon: Route, label: "Ruta de Navegación", key: "pasos" as const },
-  { icon: PenLine, label: "Cierre Analítico", key: "cierre" as const },
-];
+import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { getGuia } from "@/data/guias";
+import { useGuias } from "@/context/GuiasContext";
+import { cn } from "@/lib/utils";
 
 const GuiaDetalle = () => {
   const { id } = useParams();
-  const data = workshopData[id || "1"];
+  const navigate = useNavigate();
+  const guia = id ? getGuia(id) : undefined;
+  const { getState, updateState } = useGuias();
 
-  if (!data) {
+  if (!guia) {
     return (
       <div className="container py-20 text-center">
-        <p className="text-muted-foreground">Taller no encontrado.</p>
+        <p className="text-muted-foreground">Guía no encontrada.</p>
         <Link to="/guias" className="mt-4 inline-block">
           <Button variant="outline">Volver a Guías</Button>
         </Link>
@@ -75,55 +28,227 @@ const GuiaDetalle = () => {
     );
   }
 
+  const state = getState(guia.id, guia.pasos.length, guia.preguntas.length);
+
+  const { progress, completed, total } = useMemo(() => {
+    const stepsDone = state.steps.filter(Boolean).length;
+    const evidenciaDone = state.evidencia.trim().length > 0 ? 1 : 0;
+    const preguntasDone = state.preguntas.filter((p) => p.trim().length > 0).length;
+    const completedCount = stepsDone + evidenciaDone + preguntasDone;
+    const totalCount = guia.pasos.length + 1 + guia.preguntas.length;
+    return {
+      progress: Math.round((completedCount / totalCount) * 100),
+      completed: completedCount,
+      total: totalCount,
+    };
+  }, [state, guia]);
+
+  const isComplete = progress === 100;
+
+  const toggleStep = (i: number) => {
+    const next = [...state.steps];
+    next[i] = !next[i];
+    updateState(guia.id, { steps: next });
+  };
+
+  const handleEvidencia = (v: string) => updateState(guia.id, { evidencia: v });
+  const handlePregunta = (i: number, v: string) => {
+    const next = [...state.preguntas];
+    next[i] = v;
+    updateState(guia.id, { preguntas: next });
+  };
+
+  const handleSubmit = () => {
+    const justificacion = [
+      `GUÍA ${guia.numero}: ${guia.titulo}`,
+      `${guia.unidad}`,
+      ``,
+      `EVIDENCIA DE CAMPO:`,
+      state.evidencia,
+      ``,
+      `ANÁLISIS CRÍTICO:`,
+      ...guia.preguntas.map((p, i) => `${i + 1}. ${p}\nR: ${state.preguntas[i]}`),
+    ].join("\n");
+
+    sessionStorage.setItem(
+      "biosig:evaluacion-prefill",
+      JSON.stringify({ justificacion, guiaTitulo: guia.titulo }),
+    );
+    navigate("/evaluacion");
+  };
+
   return (
-    <div className="flex flex-col lg:flex-row min-h-[calc(100vh-4rem)]">
-      {/* Sidebar */}
-      <aside className="lg:w-[30%] border-b lg:border-b-0 lg:border-r bg-card overflow-y-auto">
-        <div className="p-6 lg:p-8 space-y-6">
-          <Link to="/guias" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="h-4 w-4" />
-            Volver a Guías
-          </Link>
+    <div className="container max-w-3xl py-8 md:py-12 px-4">
+      <Link
+        to="/guias"
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Volver a Guías
+      </Link>
 
-          <h1 className="text-xl font-bold">{data.title}</h1>
-          <p className="text-sm text-muted-foreground">{data.description}</p>
+      {/* Encabezado Académico */}
+      <header className="bg-card border rounded-2xl p-6 md:p-8 card-shadow mb-8">
+        <div className="flex items-center gap-2 text-xs font-medium text-primary uppercase tracking-wider mb-3">
+          <BookOpen className="h-3.5 w-3.5" />
+          {guia.unidad}
+        </div>
+        <h1 className="text-2xl md:text-3xl font-bold leading-tight mb-4">
+          Guía {guia.numero}: {guia.titulo}
+        </h1>
 
-          <div className="space-y-6 pt-2">
-            {sidebarSections.map((section) => (
-              <div key={section.key}>
-                <div className="flex items-center gap-2 mb-2">
-                  <section.icon className="h-4 w-4 text-primary" />
-                  <h3 className="text-sm font-semibold">{section.label}</h3>
-                </div>
-                {section.key === "pasos" ? (
-                  <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground leading-relaxed pl-1">
-                    {data.pasos.map((paso, i) => (
-                      <li key={i}>{paso}</li>
-                    ))}
-                  </ol>
-                ) : (
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {data[section.key]}
-                  </p>
-                )}
+        <div className="flex items-start gap-2 mb-6 p-4 bg-secondary/20 rounded-lg">
+          <Target className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+          <div>
+            <p className="text-xs font-semibold text-primary mb-1">Objetivo de Aprendizaje</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">{guia.objetivo}</p>
+          </div>
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-medium text-muted-foreground">
+              Progreso de la bitácora
+            </span>
+            <span className="text-xs font-semibold tabular-nums">
+              {completed}/{total} · {progress}%
+            </span>
+          </div>
+          <Progress value={progress} className="h-2" />
+        </div>
+      </header>
+
+      {/* Fundamento Teórico */}
+      <section className="mb-8">
+        <Accordion type="single" collapsible defaultValue="fundamento" className="bg-card border rounded-2xl px-6 card-shadow">
+          <AccordionItem value="fundamento" className="border-b-0">
+            <AccordionTrigger className="hover:no-underline py-5">
+              <div className="flex items-center gap-3">
+                <BookOpen className="h-5 w-5 text-primary" />
+                <span className="text-base font-semibold">Fundamento Teórico</span>
               </div>
-            ))}
-          </div>
-        </div>
-      </aside>
+            </AccordionTrigger>
+            <AccordionContent className="pb-6">
+              <p className="text-sm md:text-base text-muted-foreground leading-[1.8] pl-8">
+                {guia.fundamento}
+              </p>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </section>
 
-      {/* Main viewer */}
-      <main className="flex-1 p-6 lg:p-10 flex items-center justify-center bg-muted/30">
-        <div className="w-full max-w-4xl aspect-video rounded-xl border-2 border-dashed border-border bg-card flex items-center justify-center">
-          <div className="text-center p-8">
-            <div className="w-16 h-16 rounded-full bg-secondary/30 flex items-center justify-center mx-auto mb-4">
-              <Target className="h-8 w-8 text-primary" />
-            </div>
-            <h2 className="text-xl font-semibold mb-2">Visor SIG Interactivo</h2>
-            <p className="text-muted-foreground text-sm">(Google Earth / MAATE)</p>
-          </div>
+      {/* Checklist Procedimental */}
+      <section className="mb-8">
+        <div className="flex items-center gap-3 mb-4 px-1">
+          <CheckCircle2 className="h-5 w-5 text-primary" />
+          <h2 className="text-lg font-semibold">Procedimiento SIG</h2>
         </div>
-      </main>
+        <ol className="space-y-3">
+          {guia.pasos.map((paso, i) => {
+            const checked = state.steps[i];
+            return (
+              <li
+                key={i}
+                className={cn(
+                  "bg-card border rounded-xl p-4 transition-all duration-300",
+                  checked && "bg-secondary/20 border-primary/40",
+                )}
+              >
+                <label className="flex items-start gap-4 cursor-pointer min-h-[44px]">
+                  <Checkbox
+                    checked={checked}
+                    onCheckedChange={() => toggleStep(i)}
+                    className="mt-1 h-5 w-5 shrink-0"
+                  />
+                  <div className="flex-1 space-y-2">
+                    <div className="flex items-start gap-2">
+                      <span className="text-xs font-bold text-primary tabular-nums mt-0.5">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <p
+                        className={cn(
+                          "text-sm md:text-base leading-relaxed transition-all",
+                          checked && "line-through text-muted-foreground",
+                        )}
+                      >
+                        {paso.text}
+                      </p>
+                    </div>
+                    {paso.tip && (
+                      <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted/40 rounded-md p-2.5 ml-6">
+                        <Lightbulb className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
+                        <span className="leading-relaxed">
+                          <strong className="text-foreground">Tip SIG:</strong> {paso.tip}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </label>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
+
+      {/* Bloque de Evidencia */}
+      <section className="mb-8">
+        <div className="flex items-center gap-3 mb-4 px-1">
+          <FileText className="h-5 w-5 text-primary" />
+          <h2 className="text-lg font-semibold">Bitácora de Evidencia</h2>
+        </div>
+        <div className="bg-card border rounded-2xl p-5 card-shadow">
+          <Label htmlFor="evidencia" className="text-sm font-medium mb-2 block">
+            Registro de campo
+          </Label>
+          <Textarea
+            id="evidencia"
+            value={state.evidencia}
+            onChange={(e) => handleEvidencia(e.target.value)}
+            placeholder={guia.evidenciaPlaceholder}
+            className="min-h-[140px] text-base leading-relaxed resize-y"
+          />
+        </div>
+      </section>
+
+      {/* Cuestionario de Análisis Crítico */}
+      <section className="mb-8">
+        <div className="flex items-center gap-3 mb-4 px-1">
+          <Brain className="h-5 w-5 text-primary" />
+          <h2 className="text-lg font-semibold">Análisis Crítico</h2>
+        </div>
+        <div className="space-y-4">
+          {guia.preguntas.map((pregunta, i) => (
+            <div key={i} className="bg-card border rounded-2xl p-5 card-shadow">
+              <Label htmlFor={`pregunta-${i}`} className="text-sm font-medium mb-3 block leading-relaxed">
+                <span className="text-primary font-bold mr-1.5">P{i + 1}.</span>
+                {pregunta}
+              </Label>
+              <Textarea
+                id={`pregunta-${i}`}
+                value={state.preguntas[i]}
+                onChange={(e) => handlePregunta(i, e.target.value)}
+                placeholder="Desarrolla tu respuesta argumentativa..."
+                className="min-h-[110px] text-base leading-relaxed resize-y"
+              />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Submit */}
+      <div className="sticky bottom-4 z-10">
+        <Button
+          onClick={handleSubmit}
+          disabled={!isComplete}
+          size="lg"
+          className="w-full h-14 text-base font-semibold shadow-lg"
+        >
+          <Send className="h-5 w-5 mr-2" />
+          {isComplete
+            ? "Enviar Respuestas a Evaluación por IA"
+            : `Completa la guía (${progress}%) para enviar`}
+        </Button>
+      </div>
     </div>
   );
 };
