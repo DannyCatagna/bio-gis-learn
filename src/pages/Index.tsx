@@ -315,7 +315,7 @@ const Index = () => {
                   innerRadius={55}
                   outerRadius={90}
                   paddingAngle={3}
-                  animationDuration={900}
+                  isAnimationActive={false}
                 >
                   {carbono.map((_, i) => (
                     <Cell key={i} fill={pieColors[i % pieColors.length]} />
