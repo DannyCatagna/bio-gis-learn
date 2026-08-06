@@ -36,9 +36,24 @@
 
     --radius: 0.75rem;
 
+    /* Paleta megadiversa Ecuador */
+    --jungle: 160 84% 39%;            /* Verde Selva Intenso #10B981 */
+    --jungle-foreground: 0 0% 100%;
+    --ocean: 217 91% 60%;             /* Azul Galápagos #3B82F6 */
+    --ocean-foreground: 0 0% 100%;
+    --paramo: 38 92% 50%;             /* Amarillo Páramo #F59E0B */
+    --paramo-foreground: 30 60% 12%;
+
+    --surface: 210 33% 98%;           /* #F7FAFC */
+    --surface-raised: 0 0% 100%;
+
+    --glass-bg: 0 0% 100% / 0.62;
+    --glass-border: 210 20% 100% / 0.55;
+
     --hero-gradient: linear-gradient(135deg, hsl(153 43% 29%), hsl(153 43% 22%));
-    --card-shadow: 0 4px 24px -4px hsl(153 43% 29% / 0.08);
-    --card-shadow-hover: 0 8px 32px -4px hsl(153 43% 29% / 0.15);
+    --card-shadow: 0 4px 24px -4px hsl(200 30% 20% / 0.08);
+    --card-shadow-hover: 0 14px 40px -8px hsl(200 30% 20% / 0.18);
+
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 153 45% 18%;
