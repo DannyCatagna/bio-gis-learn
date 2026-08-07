@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { MapContainer, TileLayer, CircleMarker, Tooltip, LayerGroup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -24,7 +24,13 @@ import {
   ArrowRight,
   Flame,
   TreePine,
-  Filter,
+  Droplets,
+  Ship,
+  Mountain,
+  Info,
+  Trees,
+  Ruler,
+  Lightbulb,
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -67,28 +73,31 @@ const capas = [
 /* ---------------- Misiones (retos constructivistas) ---------------- */
 const misiones = [
   {
-    icon: MapPin,
-    title: "Análisis Espacial",
-    reto: "Identifica patrones de distribución de 3 especies endémicas usando capas SIG.",
+    icon: Droplets,
+    title: "Misión 1 · Seguridad Hídrica",
+    reto: "Identifica el área que abastece de recursos hídricos a infraestructuras clave como la Central Coca Codo Sinclair y el sistema Papallacta.",
+    solucion: "Parque Nacional Cayambe Coca",
     nivel: "Nivel 1",
-    insignia: "Cartógrafo Novato",
-    tono: "jungle" as const,
-  },
-  {
-    icon: Satellite,
-    title: "Datos Satelitales",
-    reto: "Interpreta cobertura vegetal y detecta pérdida de bosque en el último quinquenio.",
-    nivel: "Nivel 2",
-    insignia: "Observador Orbital",
+    insignia: "Guardián del Agua",
     tono: "ocean" as const,
   },
   {
-    icon: FileSearch,
-    title: "Resolución de Casos",
-    reto: "Propón una zonificación para un conflicto territorial en un área protegida.",
-    nivel: "Nivel 3",
+    icon: Ship,
+    title: "Misión 2 · Presiones Antrópicas",
+    reto: "Localiza el único parque nacional del subtrópico árido costero que sufre presiones por pesca de arrastre ilegal y expansión urbana no planificada.",
+    solucion: "Parque Nacional Machalilla",
+    nivel: "Nivel 2",
     insignia: "Gestor de Conflictos",
     tono: "paramo" as const,
+  },
+  {
+    icon: Mountain,
+    title: "Misión 3 · Endemismo Andino",
+    reto: "Explora el páramo húmedo donde habita de manera exclusiva el frailejón con hojas en roseta recubiertas por densas vellosidades blanquecinas.",
+    solucion: "Reserva Ecológica El Ángel",
+    nivel: "Nivel 3",
+    insignia: "Botánico de Altura",
+    tono: "jungle" as const,
   },
 ];
 
@@ -110,95 +119,51 @@ const tonoClases = {
   },
 };
 
-/* ---------------- Datos simulados por región ---------------- */
-const regiones = [
-  { id: "todas", label: "Todo el país" },
-  { id: "amazonia", label: "Amazonía" },
-  { id: "costa", label: "Costa" },
-  { id: "sierra", label: "Sierra" },
-  { id: "insular", label: "Insular" },
-] as const;
+/* ---------------- Datos oficiales SNAP ---------------- */
+const SNAP_DEFINICION =
+  "El SNAP integra áreas terrestres, marinas e insulares de importancia ecológica y sociocultural, cuya gestión contribuye a la protección de la biodiversidad, el mantenimiento de los servicios ecosistémicos y el desarrollo sostenible del país.";
 
-type RegionId = (typeof regiones)[number]["id"];
-
-const especiesPorRegion: Record<RegionId, { nombre: string; enConflicto: number; monitoreadas: number }[]> = {
-  todas: [
-    { nombre: "Anfibios", enConflicto: 42, monitoreadas: 58 },
-    { nombre: "Aves", enConflicto: 31, monitoreadas: 74 },
-    { nombre: "Mamíferos", enConflicto: 24, monitoreadas: 46 },
-    { nombre: "Reptiles", enConflicto: 18, monitoreadas: 29 },
-    { nombre: "Plantas", enConflicto: 55, monitoreadas: 92 },
-  ],
-  amazonia: [
-    { nombre: "Anfibios", enConflicto: 21, monitoreadas: 26 },
-    { nombre: "Aves", enConflicto: 14, monitoreadas: 33 },
-    { nombre: "Mamíferos", enConflicto: 11, monitoreadas: 19 },
-    { nombre: "Reptiles", enConflicto: 8, monitoreadas: 12 },
-    { nombre: "Plantas", enConflicto: 27, monitoreadas: 41 },
-  ],
-  costa: [
-    { nombre: "Anfibios", enConflicto: 9, monitoreadas: 13 },
-    { nombre: "Aves", enConflicto: 8, monitoreadas: 18 },
-    { nombre: "Mamíferos", enConflicto: 6, monitoreadas: 11 },
-    { nombre: "Reptiles", enConflicto: 5, monitoreadas: 8 },
-    { nombre: "Plantas", enConflicto: 14, monitoreadas: 24 },
-  ],
-  sierra: [
-    { nombre: "Anfibios", enConflicto: 10, monitoreadas: 15 },
-    { nombre: "Aves", enConflicto: 6, monitoreadas: 17 },
-    { nombre: "Mamíferos", enConflicto: 5, monitoreadas: 12 },
-    { nombre: "Reptiles", enConflicto: 3, monitoreadas: 6 },
-    { nombre: "Plantas", enConflicto: 11, monitoreadas: 20 },
-  ],
-  insular: [
-    { nombre: "Anfibios", enConflicto: 2, monitoreadas: 4 },
-    { nombre: "Aves", enConflicto: 3, monitoreadas: 6 },
-    { nombre: "Mamíferos", enConflicto: 2, monitoreadas: 4 },
-    { nombre: "Reptiles", enConflicto: 2, monitoreadas: 3 },
-    { nombre: "Plantas", enConflicto: 3, monitoreadas: 7 },
-  ],
-};
-
-/* Carbono: a nivel país se compara por región; dentro de una región, por ecosistema */
-const carbonoPorRegion: Record<RegionId, { name: string; value: number }[]> = {
-  todas: [
-    { name: "Amazonía", value: 54 },
-    { name: "Costa", value: 21 },
-    { name: "Sierra", value: 17 },
-    { name: "Insular", value: 8 },
-  ],
-  amazonia: [
-    { name: "Bosque húmedo", value: 62 },
-    { name: "Várzea inundable", value: 18 },
-    { name: "Turberas", value: 14 },
-    { name: "Bosque intervenido", value: 6 },
-  ],
-  costa: [
-    { name: "Manglar", value: 46 },
-    { name: "Bosque seco", value: 24 },
-    { name: "Bosque húmedo Chocó", value: 22 },
-    { name: "Agroecosistemas", value: 8 },
-  ],
-  sierra: [
-    { name: "Páramo", value: 51 },
-    { name: "Bosque andino", value: 29 },
-    { name: "Humedales altoandinos", value: 13 },
-    { name: "Matorral seco", value: 7 },
-  ],
-  insular: [
-    { name: "Zona húmeda alta", value: 44 },
-    { name: "Zona árida costera", value: 31 },
-    { name: "Manglar insular", value: 16 },
-    { name: "Zona de transición", value: 9 },
-  ],
-};
-
-const pieColors = [
-  "hsl(var(--jungle))",
-  "hsl(var(--ocean))",
-  "hsl(var(--paramo))",
-  "hsl(153 30% 45%)",
+const kpis = [
+  {
+    icon: Ruler,
+    valor: "26.477.811",
+    unidad: "hectáreas",
+    label: "Superficie conservada total",
+    tono: "jungle" as const,
+  },
+  {
+    icon: Trees,
+    valor: "81",
+    unidad: "áreas protegidas",
+    label: "Total nacional declaradas",
+    tono: "ocean" as const,
+  },
+  {
+    icon: Flame,
+    valor: "277",
+    unidad: "MtC",
+    label: "Carbono irrecuperable en el SNAP (32,6% nacional)",
+    tono: "paramo" as const,
+  },
 ];
+
+/* Distribución de superficie del SNAP */
+const superficieData = [
+  { name: "Superficie Marina", value: 79.6 },
+  { name: "Superficie Terrestre", value: 20.4 },
+];
+
+/* Carbono irrecuperable: SNAP frente al total nacional */
+const CARBONO_SNAP = 277;
+const CARBONO_PORCENTAJE = 32.6;
+const CARBONO_NACIONAL = Math.round((CARBONO_SNAP / (CARBONO_PORCENTAJE / 100)) * 10) / 10;
+const carbonoData = [
+  { nombre: "Dentro del SNAP", valor: CARBONO_SNAP },
+  { nombre: "Fuera del SNAP", valor: Math.round((CARBONO_NACIONAL - CARBONO_SNAP) * 10) / 10 },
+  { nombre: "Total nacional", valor: CARBONO_NACIONAL },
+];
+
+const pieColors = ["hsl(var(--ocean))", "hsl(var(--jungle))"];
 
 const tooltipStyle = {
   borderRadius: 12,
@@ -212,20 +177,12 @@ const tooltipStyle = {
 
 const Index = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [region, setRegion] = useState<RegionId>("todas");
   const [activas, setActivas] = useState<Record<string, boolean>>({
     snap: true,
     carbono: true,
     conflicto: false,
   });
 
-  const especies = useMemo(() => especiesPorRegion[region], [region]);
-  const carbono = useMemo(() => carbonoPorRegion[region], [region]);
-  const regionLabel = regiones.find((r) => r.id === region)!.label;
-  const totalConflicto = useMemo(
-    () => especies.reduce((acc, e) => acc + e.enConflicto, 0),
-    [especies],
-  );
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] bg-surface">
