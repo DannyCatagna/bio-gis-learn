@@ -281,6 +281,43 @@ const Index = () => {
           </div>
         </section>
 
+        {/* Definición oficial del SNAP */}
+        <section className="rounded-2xl border bg-surface-raised p-6 md:p-8 card-shadow">
+          <div className="flex items-center gap-2 mb-3">
+            <Info className="h-5 w-5 text-ocean" />
+            <h2 className="text-base md:text-lg font-bold">
+              Sistema Nacional de Áreas Protegidas (SNAP)
+            </h2>
+          </div>
+          <p className="max-w-4xl text-sm md:text-base leading-relaxed text-muted-foreground">
+            {SNAP_DEFINICION}
+          </p>
+        </section>
+
+        {/* KPIs */}
+        <section className="grid gap-4 md:grid-cols-3">
+          {kpis.map((k) => {
+            const t = tonoClases[k.tono];
+            return (
+              <article
+                key={k.label}
+                className="rounded-2xl border bg-surface-raised p-6 card-shadow transition-shadow duration-300 hover:card-shadow-hover"
+              >
+                <div className={`h-11 w-11 rounded-xl grid place-items-center ${t.chip}`}>
+                  <k.icon className="h-5 w-5" />
+                </div>
+                <p className="mt-4 text-3xl font-bold tracking-tight">{k.valor}</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  {k.unidad}
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{k.label}</p>
+              </article>
+            );
+          })}
+        </section>
+
+
+
         {/* Misiones */}
         <section>
           <div className="flex items-center gap-2 mb-4">
