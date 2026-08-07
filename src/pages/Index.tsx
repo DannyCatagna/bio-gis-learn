@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { MapContainer, TileLayer, CircleMarker, Tooltip, LayerGroup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -24,6 +24,7 @@ import {
   ArrowRight,
   Flame,
   TreePine,
+  Filter,
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -109,21 +110,88 @@ const tonoClases = {
   },
 };
 
-/* ---------------- Datos simulados de los paneles ---------------- */
-const especies = [
-  { nombre: "Anfibios", enConflicto: 42, monitoreadas: 58 },
-  { nombre: "Aves", enConflicto: 31, monitoreadas: 74 },
-  { nombre: "Mamíferos", enConflicto: 24, monitoreadas: 46 },
-  { nombre: "Reptiles", enConflicto: 18, monitoreadas: 29 },
-  { nombre: "Plantas", enConflicto: 55, monitoreadas: 92 },
-];
+/* ---------------- Datos simulados por región ---------------- */
+const regiones = [
+  { id: "todas", label: "Todo el país" },
+  { id: "amazonia", label: "Amazonía" },
+  { id: "costa", label: "Costa" },
+  { id: "sierra", label: "Sierra" },
+  { id: "insular", label: "Insular" },
+] as const;
 
-const carbono = [
-  { name: "Amazonía", value: 54 },
-  { name: "Costa", value: 21 },
-  { name: "Sierra", value: 17 },
-  { name: "Insular", value: 8 },
-];
+type RegionId = (typeof regiones)[number]["id"];
+
+const especiesPorRegion: Record<RegionId, { nombre: string; enConflicto: number; monitoreadas: number }[]> = {
+  todas: [
+    { nombre: "Anfibios", enConflicto: 42, monitoreadas: 58 },
+    { nombre: "Aves", enConflicto: 31, monitoreadas: 74 },
+    { nombre: "Mamíferos", enConflicto: 24, monitoreadas: 46 },
+    { nombre: "Reptiles", enConflicto: 18, monitoreadas: 29 },
+    { nombre: "Plantas", enConflicto: 55, monitoreadas: 92 },
+  ],
+  amazonia: [
+    { nombre: "Anfibios", enConflicto: 21, monitoreadas: 26 },
+    { nombre: "Aves", enConflicto: 14, monitoreadas: 33 },
+    { nombre: "Mamíferos", enConflicto: 11, monitoreadas: 19 },
+    { nombre: "Reptiles", enConflicto: 8, monitoreadas: 12 },
+    { nombre: "Plantas", enConflicto: 27, monitoreadas: 41 },
+  ],
+  costa: [
+    { nombre: "Anfibios", enConflicto: 9, monitoreadas: 13 },
+    { nombre: "Aves", enConflicto: 8, monitoreadas: 18 },
+    { nombre: "Mamíferos", enConflicto: 6, monitoreadas: 11 },
+    { nombre: "Reptiles", enConflicto: 5, monitoreadas: 8 },
+    { nombre: "Plantas", enConflicto: 14, monitoreadas: 24 },
+  ],
+  sierra: [
+    { nombre: "Anfibios", enConflicto: 10, monitoreadas: 15 },
+    { nombre: "Aves", enConflicto: 6, monitoreadas: 17 },
+    { nombre: "Mamíferos", enConflicto: 5, monitoreadas: 12 },
+    { nombre: "Reptiles", enConflicto: 3, monitoreadas: 6 },
+    { nombre: "Plantas", enConflicto: 11, monitoreadas: 20 },
+  ],
+  insular: [
+    { nombre: "Anfibios", enConflicto: 2, monitoreadas: 4 },
+    { nombre: "Aves", enConflicto: 3, monitoreadas: 6 },
+    { nombre: "Mamíferos", enConflicto: 2, monitoreadas: 4 },
+    { nombre: "Reptiles", enConflicto: 2, monitoreadas: 3 },
+    { nombre: "Plantas", enConflicto: 3, monitoreadas: 7 },
+  ],
+};
+
+/* Carbono: a nivel país se compara por región; dentro de una región, por ecosistema */
+const carbonoPorRegion: Record<RegionId, { name: string; value: number }[]> = {
+  todas: [
+    { name: "Amazonía", value: 54 },
+    { name: "Costa", value: 21 },
+    { name: "Sierra", value: 17 },
+    { name: "Insular", value: 8 },
+  ],
+  amazonia: [
+    { name: "Bosque húmedo", value: 62 },
+    { name: "Várzea inundable", value: 18 },
+    { name: "Turberas", value: 14 },
+    { name: "Bosque intervenido", value: 6 },
+  ],
+  costa: [
+    { name: "Manglar", value: 46 },
+    { name: "Bosque seco", value: 24 },
+    { name: "Bosque húmedo Chocó", value: 22 },
+    { name: "Agroecosistemas", value: 8 },
+  ],
+  sierra: [
+    { name: "Páramo", value: 51 },
+    { name: "Bosque andino", value: 29 },
+    { name: "Humedales altoandinos", value: 13 },
+    { name: "Matorral seco", value: 7 },
+  ],
+  insular: [
+    { name: "Zona húmeda alta", value: 44 },
+    { name: "Zona árida costera", value: 31 },
+    { name: "Manglar insular", value: 16 },
+    { name: "Zona de transición", value: 9 },
+  ],
+};
 
 const pieColors = [
   "hsl(var(--jungle))",
@@ -141,13 +209,23 @@ const tooltipStyle = {
 };
 
 
+
 const Index = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [region, setRegion] = useState<RegionId>("todas");
   const [activas, setActivas] = useState<Record<string, boolean>>({
     snap: true,
     carbono: true,
     conflicto: false,
   });
+
+  const especies = useMemo(() => especiesPorRegion[region], [region]);
+  const carbono = useMemo(() => carbonoPorRegion[region], [region]);
+  const regionLabel = regiones.find((r) => r.id === region)!.label;
+  const totalConflicto = useMemo(
+    () => especies.reduce((acc, e) => acc + e.enConflicto, 0),
+    [especies],
+  );
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] bg-surface">
@@ -287,17 +365,44 @@ const Index = () => {
         </section>
 
         {/* Paneles de datos */}
-        <section className="grid gap-4 lg:grid-cols-2">
+        <section className="space-y-4">
+          {/* Filtro de región */}
+          <div className="flex flex-wrap items-center gap-2 rounded-2xl border bg-surface-raised p-3 card-shadow">
+            <span className="flex items-center gap-2 text-xs font-semibold text-muted-foreground mr-1">
+              <Filter className="h-4 w-4 text-ocean" />
+              Filtrar por región
+            </span>
+            {regiones.map((r) => {
+              const activa = region === r.id;
+              return (
+                <button
+                  key={r.id}
+                  onClick={() => setRegion(r.id)}
+                  aria-pressed={activa}
+                  className={`rounded-full px-4 min-h-[36px] text-xs font-semibold transition-all duration-200 ${
+                    activa
+                      ? "bg-jungle text-jungle-foreground shadow-md scale-[1.03]"
+                      : "bg-muted text-muted-foreground hover:bg-muted/70 hover:text-foreground"
+                  }`}
+                >
+                  {r.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-2">
           <div className="rounded-2xl border bg-surface-raised p-5 card-shadow transition-shadow duration-300 hover:card-shadow-hover">
             <div className="flex items-center gap-2 mb-1">
               <Flame className="h-4 w-4 text-paramo" />
               <h3 className="text-sm font-semibold">Especies protegidas en conflicto</h3>
             </div>
             <p className="text-xs text-muted-foreground mb-4">
-              Registros simulados por grupo taxonómico dentro del SNAP (2024).
+              {regionLabel} · registros simulados por grupo taxonómico en el SNAP (2024). Total en
+              conflicto: <span className="font-semibold text-jungle">{totalConflicto}</span> especies.
             </p>
             <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={especies} margin={{ top: 8, right: 8, left: -16, bottom: 0 }} barGap={4}>
+              <BarChart key={region} data={especies} margin={{ top: 8, right: 8, left: -16, bottom: 0 }} barGap={4}>
                 <defs>
                   <linearGradient id="gradConflicto" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="hsl(var(--jungle))" stopOpacity={1} />
@@ -323,6 +428,8 @@ const Index = () => {
                 <ReTooltip
                   cursor={{ fill: "hsl(var(--muted))", opacity: 0.5 }}
                   contentStyle={tooltipStyle}
+                  labelFormatter={(l) => `${l} · ${regionLabel}`}
+                  formatter={(v: number, n: string) => [`${v} especies`, n]}
                 />
                 <Legend iconType="circle" wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
                 <Bar
@@ -352,10 +459,12 @@ const Index = () => {
               <h3 className="text-sm font-semibold">Carbono irrecuperable por región</h3>
             </div>
             <p className="text-xs text-muted-foreground mb-4">
-              Distribución porcentual simulada de reservorios críticos de carbono.
+              {region === "todas"
+                ? "Distribución porcentual simulada entre las cuatro regiones del país."
+                : `Reservorios críticos simulados por ecosistema en ${regionLabel}.`}
             </p>
             <ResponsiveContainer width="100%" height={260}>
-              <PieChart>
+              <PieChart key={region}>
                 <Pie
                   data={carbono}
                   dataKey="value"
@@ -375,10 +484,14 @@ const Index = () => {
                     <Cell key={entry.name} fill={pieColors[i % pieColors.length]} />
                   ))}
                 </Pie>
-                <ReTooltip formatter={(v: number) => `${v}%`} contentStyle={tooltipStyle} />
+                <ReTooltip
+                  contentStyle={tooltipStyle}
+                  formatter={(v: number, n: string) => [`${v}% del carbono · ${regionLabel}`, n]}
+                />
                 <Legend iconType="circle" wrapperStyle={{ fontSize: 12 }} />
               </PieChart>
             </ResponsiveContainer>
+          </div>
           </div>
         </section>
       </div>
