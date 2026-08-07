@@ -109,21 +109,88 @@ const tonoClases = {
   },
 };
 
-/* ---------------- Datos simulados de los paneles ---------------- */
-const especies = [
-  { nombre: "Anfibios", enConflicto: 42, monitoreadas: 58 },
-  { nombre: "Aves", enConflicto: 31, monitoreadas: 74 },
-  { nombre: "Mamíferos", enConflicto: 24, monitoreadas: 46 },
-  { nombre: "Reptiles", enConflicto: 18, monitoreadas: 29 },
-  { nombre: "Plantas", enConflicto: 55, monitoreadas: 92 },
-];
+/* ---------------- Datos simulados por región ---------------- */
+const regiones = [
+  { id: "todas", label: "Todo el país" },
+  { id: "amazonia", label: "Amazonía" },
+  { id: "costa", label: "Costa" },
+  { id: "sierra", label: "Sierra" },
+  { id: "insular", label: "Insular" },
+] as const;
 
-const carbono = [
-  { name: "Amazonía", value: 54 },
-  { name: "Costa", value: 21 },
-  { name: "Sierra", value: 17 },
-  { name: "Insular", value: 8 },
-];
+type RegionId = (typeof regiones)[number]["id"];
+
+const especiesPorRegion: Record<RegionId, { nombre: string; enConflicto: number; monitoreadas: number }[]> = {
+  todas: [
+    { nombre: "Anfibios", enConflicto: 42, monitoreadas: 58 },
+    { nombre: "Aves", enConflicto: 31, monitoreadas: 74 },
+    { nombre: "Mamíferos", enConflicto: 24, monitoreadas: 46 },
+    { nombre: "Reptiles", enConflicto: 18, monitoreadas: 29 },
+    { nombre: "Plantas", enConflicto: 55, monitoreadas: 92 },
+  ],
+  amazonia: [
+    { nombre: "Anfibios", enConflicto: 21, monitoreadas: 26 },
+    { nombre: "Aves", enConflicto: 14, monitoreadas: 33 },
+    { nombre: "Mamíferos", enConflicto: 11, monitoreadas: 19 },
+    { nombre: "Reptiles", enConflicto: 8, monitoreadas: 12 },
+    { nombre: "Plantas", enConflicto: 27, monitoreadas: 41 },
+  ],
+  costa: [
+    { nombre: "Anfibios", enConflicto: 9, monitoreadas: 13 },
+    { nombre: "Aves", enConflicto: 8, monitoreadas: 18 },
+    { nombre: "Mamíferos", enConflicto: 6, monitoreadas: 11 },
+    { nombre: "Reptiles", enConflicto: 5, monitoreadas: 8 },
+    { nombre: "Plantas", enConflicto: 14, monitoreadas: 24 },
+  ],
+  sierra: [
+    { nombre: "Anfibios", enConflicto: 10, monitoreadas: 15 },
+    { nombre: "Aves", enConflicto: 6, monitoreadas: 17 },
+    { nombre: "Mamíferos", enConflicto: 5, monitoreadas: 12 },
+    { nombre: "Reptiles", enConflicto: 3, monitoreadas: 6 },
+    { nombre: "Plantas", enConflicto: 11, monitoreadas: 20 },
+  ],
+  insular: [
+    { nombre: "Anfibios", enConflicto: 2, monitoreadas: 4 },
+    { nombre: "Aves", enConflicto: 3, monitoreadas: 6 },
+    { nombre: "Mamíferos", enConflicto: 2, monitoreadas: 4 },
+    { nombre: "Reptiles", enConflicto: 2, monitoreadas: 3 },
+    { nombre: "Plantas", enConflicto: 3, monitoreadas: 7 },
+  ],
+};
+
+/* Carbono: a nivel país se compara por región; dentro de una región, por ecosistema */
+const carbonoPorRegion: Record<RegionId, { name: string; value: number }[]> = {
+  todas: [
+    { name: "Amazonía", value: 54 },
+    { name: "Costa", value: 21 },
+    { name: "Sierra", value: 17 },
+    { name: "Insular", value: 8 },
+  ],
+  amazonia: [
+    { name: "Bosque húmedo", value: 62 },
+    { name: "Várzea inundable", value: 18 },
+    { name: "Turberas", value: 14 },
+    { name: "Bosque intervenido", value: 6 },
+  ],
+  costa: [
+    { name: "Manglar", value: 46 },
+    { name: "Bosque seco", value: 24 },
+    { name: "Bosque húmedo Chocó", value: 22 },
+    { name: "Agroecosistemas", value: 8 },
+  ],
+  sierra: [
+    { name: "Páramo", value: 51 },
+    { name: "Bosque andino", value: 29 },
+    { name: "Humedales altoandinos", value: 13 },
+    { name: "Matorral seco", value: 7 },
+  ],
+  insular: [
+    { name: "Zona húmeda alta", value: 44 },
+    { name: "Zona árida costera", value: 31 },
+    { name: "Manglar insular", value: 16 },
+    { name: "Zona de transición", value: 9 },
+  ],
+};
 
 const pieColors = [
   "hsl(var(--jungle))",
@@ -139,6 +206,7 @@ const tooltipStyle = {
   boxShadow: "var(--card-shadow-hover)",
   fontSize: 12,
 };
+
 
 
 const Index = () => {
