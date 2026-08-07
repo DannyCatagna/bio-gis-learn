@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { MapContainer, TileLayer, CircleMarker, Tooltip, LayerGroup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -24,7 +24,13 @@ import {
   ArrowRight,
   Flame,
   TreePine,
-  Filter,
+  Droplets,
+  Ship,
+  Mountain,
+  Info,
+  Trees,
+  Ruler,
+  Lightbulb,
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -67,28 +73,31 @@ const capas = [
 /* ---------------- Misiones (retos constructivistas) ---------------- */
 const misiones = [
   {
-    icon: MapPin,
-    title: "Análisis Espacial",
-    reto: "Identifica patrones de distribución de 3 especies endémicas usando capas SIG.",
+    icon: Droplets,
+    title: "Misión 1 · Seguridad Hídrica",
+    reto: "Identifica el área que abastece de recursos hídricos a infraestructuras clave como la Central Coca Codo Sinclair y el sistema Papallacta.",
+    solucion: "Parque Nacional Cayambe Coca",
     nivel: "Nivel 1",
-    insignia: "Cartógrafo Novato",
-    tono: "jungle" as const,
-  },
-  {
-    icon: Satellite,
-    title: "Datos Satelitales",
-    reto: "Interpreta cobertura vegetal y detecta pérdida de bosque en el último quinquenio.",
-    nivel: "Nivel 2",
-    insignia: "Observador Orbital",
+    insignia: "Guardián del Agua",
     tono: "ocean" as const,
   },
   {
-    icon: FileSearch,
-    title: "Resolución de Casos",
-    reto: "Propón una zonificación para un conflicto territorial en un área protegida.",
-    nivel: "Nivel 3",
+    icon: Ship,
+    title: "Misión 2 · Presiones Antrópicas",
+    reto: "Localiza el único parque nacional del subtrópico árido costero que sufre presiones por pesca de arrastre ilegal y expansión urbana no planificada.",
+    solucion: "Parque Nacional Machalilla",
+    nivel: "Nivel 2",
     insignia: "Gestor de Conflictos",
     tono: "paramo" as const,
+  },
+  {
+    icon: Mountain,
+    title: "Misión 3 · Endemismo Andino",
+    reto: "Explora el páramo húmedo donde habita de manera exclusiva el frailejón con hojas en roseta recubiertas por densas vellosidades blanquecinas.",
+    solucion: "Reserva Ecológica El Ángel",
+    nivel: "Nivel 3",
+    insignia: "Botánico de Altura",
+    tono: "jungle" as const,
   },
 ];
 
@@ -110,95 +119,51 @@ const tonoClases = {
   },
 };
 
-/* ---------------- Datos simulados por región ---------------- */
-const regiones = [
-  { id: "todas", label: "Todo el país" },
-  { id: "amazonia", label: "Amazonía" },
-  { id: "costa", label: "Costa" },
-  { id: "sierra", label: "Sierra" },
-  { id: "insular", label: "Insular" },
-] as const;
+/* ---------------- Datos oficiales SNAP ---------------- */
+const SNAP_DEFINICION =
+  "El SNAP integra áreas terrestres, marinas e insulares de importancia ecológica y sociocultural, cuya gestión contribuye a la protección de la biodiversidad, el mantenimiento de los servicios ecosistémicos y el desarrollo sostenible del país.";
 
-type RegionId = (typeof regiones)[number]["id"];
-
-const especiesPorRegion: Record<RegionId, { nombre: string; enConflicto: number; monitoreadas: number }[]> = {
-  todas: [
-    { nombre: "Anfibios", enConflicto: 42, monitoreadas: 58 },
-    { nombre: "Aves", enConflicto: 31, monitoreadas: 74 },
-    { nombre: "Mamíferos", enConflicto: 24, monitoreadas: 46 },
-    { nombre: "Reptiles", enConflicto: 18, monitoreadas: 29 },
-    { nombre: "Plantas", enConflicto: 55, monitoreadas: 92 },
-  ],
-  amazonia: [
-    { nombre: "Anfibios", enConflicto: 21, monitoreadas: 26 },
-    { nombre: "Aves", enConflicto: 14, monitoreadas: 33 },
-    { nombre: "Mamíferos", enConflicto: 11, monitoreadas: 19 },
-    { nombre: "Reptiles", enConflicto: 8, monitoreadas: 12 },
-    { nombre: "Plantas", enConflicto: 27, monitoreadas: 41 },
-  ],
-  costa: [
-    { nombre: "Anfibios", enConflicto: 9, monitoreadas: 13 },
-    { nombre: "Aves", enConflicto: 8, monitoreadas: 18 },
-    { nombre: "Mamíferos", enConflicto: 6, monitoreadas: 11 },
-    { nombre: "Reptiles", enConflicto: 5, monitoreadas: 8 },
-    { nombre: "Plantas", enConflicto: 14, monitoreadas: 24 },
-  ],
-  sierra: [
-    { nombre: "Anfibios", enConflicto: 10, monitoreadas: 15 },
-    { nombre: "Aves", enConflicto: 6, monitoreadas: 17 },
-    { nombre: "Mamíferos", enConflicto: 5, monitoreadas: 12 },
-    { nombre: "Reptiles", enConflicto: 3, monitoreadas: 6 },
-    { nombre: "Plantas", enConflicto: 11, monitoreadas: 20 },
-  ],
-  insular: [
-    { nombre: "Anfibios", enConflicto: 2, monitoreadas: 4 },
-    { nombre: "Aves", enConflicto: 3, monitoreadas: 6 },
-    { nombre: "Mamíferos", enConflicto: 2, monitoreadas: 4 },
-    { nombre: "Reptiles", enConflicto: 2, monitoreadas: 3 },
-    { nombre: "Plantas", enConflicto: 3, monitoreadas: 7 },
-  ],
-};
-
-/* Carbono: a nivel país se compara por región; dentro de una región, por ecosistema */
-const carbonoPorRegion: Record<RegionId, { name: string; value: number }[]> = {
-  todas: [
-    { name: "Amazonía", value: 54 },
-    { name: "Costa", value: 21 },
-    { name: "Sierra", value: 17 },
-    { name: "Insular", value: 8 },
-  ],
-  amazonia: [
-    { name: "Bosque húmedo", value: 62 },
-    { name: "Várzea inundable", value: 18 },
-    { name: "Turberas", value: 14 },
-    { name: "Bosque intervenido", value: 6 },
-  ],
-  costa: [
-    { name: "Manglar", value: 46 },
-    { name: "Bosque seco", value: 24 },
-    { name: "Bosque húmedo Chocó", value: 22 },
-    { name: "Agroecosistemas", value: 8 },
-  ],
-  sierra: [
-    { name: "Páramo", value: 51 },
-    { name: "Bosque andino", value: 29 },
-    { name: "Humedales altoandinos", value: 13 },
-    { name: "Matorral seco", value: 7 },
-  ],
-  insular: [
-    { name: "Zona húmeda alta", value: 44 },
-    { name: "Zona árida costera", value: 31 },
-    { name: "Manglar insular", value: 16 },
-    { name: "Zona de transición", value: 9 },
-  ],
-};
-
-const pieColors = [
-  "hsl(var(--jungle))",
-  "hsl(var(--ocean))",
-  "hsl(var(--paramo))",
-  "hsl(153 30% 45%)",
+const kpis = [
+  {
+    icon: Ruler,
+    valor: "26.477.811",
+    unidad: "hectáreas",
+    label: "Superficie conservada total",
+    tono: "jungle" as const,
+  },
+  {
+    icon: Trees,
+    valor: "81",
+    unidad: "áreas protegidas",
+    label: "Total nacional declaradas",
+    tono: "ocean" as const,
+  },
+  {
+    icon: Flame,
+    valor: "277",
+    unidad: "MtC",
+    label: "Carbono irrecuperable en el SNAP (32,6% nacional)",
+    tono: "paramo" as const,
+  },
 ];
+
+/* Distribución de superficie del SNAP */
+const superficieData = [
+  { name: "Superficie Marina", value: 79.6 },
+  { name: "Superficie Terrestre", value: 20.4 },
+];
+
+/* Carbono irrecuperable: SNAP frente al total nacional */
+const CARBONO_SNAP = 277;
+const CARBONO_PORCENTAJE = 32.6;
+const CARBONO_NACIONAL = Math.round((CARBONO_SNAP / (CARBONO_PORCENTAJE / 100)) * 10) / 10;
+const carbonoData = [
+  { nombre: "Dentro del SNAP", valor: CARBONO_SNAP },
+  { nombre: "Fuera del SNAP", valor: Math.round((CARBONO_NACIONAL - CARBONO_SNAP) * 10) / 10 },
+  { nombre: "Total nacional", valor: CARBONO_NACIONAL },
+];
+
+const pieColors = ["hsl(var(--ocean))", "hsl(var(--jungle))"];
 
 const tooltipStyle = {
   borderRadius: 12,
@@ -212,20 +177,12 @@ const tooltipStyle = {
 
 const Index = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [region, setRegion] = useState<RegionId>("todas");
   const [activas, setActivas] = useState<Record<string, boolean>>({
     snap: true,
     carbono: true,
     conflicto: false,
   });
 
-  const especies = useMemo(() => especiesPorRegion[region], [region]);
-  const carbono = useMemo(() => carbonoPorRegion[region], [region]);
-  const regionLabel = regiones.find((r) => r.id === region)!.label;
-  const totalConflicto = useMemo(
-    () => especies.reduce((acc, e) => acc + e.enConflicto, 0),
-    [especies],
-  );
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] bg-surface">
@@ -324,6 +281,43 @@ const Index = () => {
           </div>
         </section>
 
+        {/* Definición oficial del SNAP */}
+        <section className="rounded-2xl border bg-surface-raised p-6 md:p-8 card-shadow">
+          <div className="flex items-center gap-2 mb-3">
+            <Info className="h-5 w-5 text-ocean" />
+            <h2 className="text-base md:text-lg font-bold">
+              Sistema Nacional de Áreas Protegidas (SNAP)
+            </h2>
+          </div>
+          <p className="max-w-4xl text-sm md:text-base leading-relaxed text-muted-foreground">
+            {SNAP_DEFINICION}
+          </p>
+        </section>
+
+        {/* KPIs */}
+        <section className="grid gap-4 md:grid-cols-3">
+          {kpis.map((k) => {
+            const t = tonoClases[k.tono];
+            return (
+              <article
+                key={k.label}
+                className="rounded-2xl border bg-surface-raised p-6 card-shadow transition-shadow duration-300 hover:card-shadow-hover"
+              >
+                <div className={`h-11 w-11 rounded-xl grid place-items-center ${t.chip}`}>
+                  <k.icon className="h-5 w-5" />
+                </div>
+                <p className="mt-4 text-3xl font-bold tracking-tight">{k.valor}</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  {k.unidad}
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{k.label}</p>
+              </article>
+            );
+          })}
+        </section>
+
+
+
         {/* Misiones */}
         <section>
           <div className="flex items-center gap-2 mb-4">
@@ -352,6 +346,16 @@ const Index = () => {
                   </p>
                   <h3 className="text-base font-semibold">{m.title}</h3>
                   <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{m.reto}</p>
+                  <details className="mt-4 rounded-xl border bg-surface p-3">
+                    <summary className="flex cursor-pointer items-center gap-2 text-xs font-semibold text-foreground">
+                      <Lightbulb className="h-3.5 w-3.5 text-paramo" />
+                      Ver solución esperada
+                    </summary>
+                    <p className={`mt-2 rounded-lg px-3 py-2 text-sm font-semibold ${t.chip}`}>
+                      {m.solucion}
+                    </p>
+                  </details>
+
                   <Link to="/guias" className="block mt-5">
                     <Button className={`w-full min-h-[44px] font-semibold transition-transform duration-200 group-hover:scale-[1.02] ${t.btn}`}>
                       Iniciar misión
@@ -365,52 +369,68 @@ const Index = () => {
         </section>
 
         {/* Paneles de datos */}
-        <section className="space-y-4">
-          {/* Filtro de región */}
-          <div className="flex flex-wrap items-center gap-2 rounded-2xl border bg-surface-raised p-3 card-shadow">
-            <span className="flex items-center gap-2 text-xs font-semibold text-muted-foreground mr-1">
-              <Filter className="h-4 w-4 text-ocean" />
-              Filtrar por región
-            </span>
-            {regiones.map((r) => {
-              const activa = region === r.id;
-              return (
-                <button
-                  key={r.id}
-                  onClick={() => setRegion(r.id)}
-                  aria-pressed={activa}
-                  className={`rounded-full px-4 min-h-[36px] text-xs font-semibold transition-all duration-200 ${
-                    activa
-                      ? "bg-jungle text-jungle-foreground shadow-md scale-[1.03]"
-                      : "bg-muted text-muted-foreground hover:bg-muted/70 hover:text-foreground"
-                  }`}
-                >
-                  {r.label}
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="grid gap-4 lg:grid-cols-2">
-          <div className="rounded-2xl border bg-surface-raised p-5 card-shadow transition-shadow duration-300 hover:card-shadow-hover">
+        <section className="grid gap-4 lg:grid-cols-2">
+          {/* Distribución de superficie */}
+          <div className="rounded-2xl border bg-surface-raised p-6 card-shadow transition-shadow duration-300 hover:card-shadow-hover">
             <div className="flex items-center gap-2 mb-1">
-              <Flame className="h-4 w-4 text-paramo" />
-              <h3 className="text-sm font-semibold">Especies protegidas en conflicto</h3>
+              <Layers className="h-4 w-4 text-ocean" />
+              <h3 className="text-sm font-semibold">Distribución de superficie del SNAP</h3>
             </div>
-            <p className="text-xs text-muted-foreground mb-4">
-              {regionLabel} · registros simulados por grupo taxonómico en el SNAP (2024). Total en
-              conflicto: <span className="font-semibold text-jungle">{totalConflicto}</span> especies.
+            <p className="text-xs leading-relaxed text-muted-foreground mb-4">
+              Sobre un total conservado de{" "}
+              <span className="font-semibold text-jungle">26.477.811 hectáreas</span> distribuidas en{" "}
+              <span className="font-semibold text-jungle">81 áreas protegidas</span> declaradas.
             </p>
             <ResponsiveContainer width="100%" height={260}>
-              <BarChart key={region} data={especies} margin={{ top: 8, right: 8, left: -16, bottom: 0 }} barGap={4}>
+              <PieChart>
+                <Pie
+                  data={superficieData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="45%"
+                  innerRadius={58}
+                  outerRadius={95}
+                  paddingAngle={3}
+                  cornerRadius={6}
+                  stroke="hsl(var(--card))"
+                  strokeWidth={2}
+                  animationDuration={1200}
+                  animationEasing="ease-out"
+                  label={({ value }) => `${String(value).replace(".", ",")}%`}
+                  labelLine={false}
+                >
+                  {superficieData.map((entry, i) => (
+                    <Cell key={entry.name} fill={pieColors[i % pieColors.length]} />
+                  ))}
+                </Pie>
+                <ReTooltip
+                  contentStyle={tooltipStyle}
+                  formatter={(v: number, n: string) => [`${String(v).replace(".", ",")}%`, n]}
+                />
+                <Legend iconType="circle" wrapperStyle={{ fontSize: 12 }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Carbono irrecuperable */}
+          <div className="rounded-2xl border bg-surface-raised p-6 card-shadow transition-shadow duration-300 hover:card-shadow-hover">
+            <div className="flex items-center gap-2 mb-1">
+              <Flame className="h-4 w-4 text-paramo" />
+              <h3 className="text-sm font-semibold">Carbono irrecuperable (MtC)</h3>
+            </div>
+            <p className="text-xs leading-relaxed text-muted-foreground mb-4">
+              Las áreas protegidas del SNAP concentran{" "}
+              <span className="font-semibold text-paramo">277 MtC</span> de carbono irrecuperable, lo
+              que corresponde al <span className="font-semibold text-paramo">32,6%</span> del total
+              nacional.
+            </p>
+            <ResponsiveContainer width="100%" height={260}>
+              <BarChart data={carbonoData} margin={{ top: 8, right: 8, left: -8, bottom: 0 }}>
                 <defs>
-                  <linearGradient id="gradConflicto" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="hsl(var(--jungle))" stopOpacity={1} />
-                    <stop offset="100%" stopColor="hsl(var(--jungle))" stopOpacity={0.45} />
-                  </linearGradient>
-                  <linearGradient id="gradMonitoreo" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="hsl(var(--ocean))" stopOpacity={0.85} />
-                    <stop offset="100%" stopColor="hsl(var(--ocean))" stopOpacity={0.3} />
+                  <linearGradient id="gradCarbono" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="hsl(var(--paramo))" stopOpacity={1} />
+                    <stop offset="100%" stopColor="hsl(var(--paramo))" stopOpacity={0.4} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
@@ -428,70 +448,24 @@ const Index = () => {
                 <ReTooltip
                   cursor={{ fill: "hsl(var(--muted))", opacity: 0.5 }}
                   contentStyle={tooltipStyle}
-                  labelFormatter={(l) => `${l} · ${regionLabel}`}
-                  formatter={(v: number, n: string) => [`${v} especies`, n]}
-                />
-                <Legend iconType="circle" wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
-                <Bar
-                  name="En conflicto"
-                  dataKey="enConflicto"
-                  fill="url(#gradConflicto)"
-                  radius={[8, 8, 0, 0]}
-                  animationDuration={1100}
-                  animationEasing="ease-out"
+                  formatter={(v: number) => [`${String(v).replace(".", ",")} MtC`, "Carbono irrecuperable"]}
                 />
                 <Bar
-                  name="Monitoreadas"
-                  dataKey="monitoreadas"
-                  fill="url(#gradMonitoreo)"
+                  name="Carbono irrecuperable"
+                  dataKey="valor"
                   radius={[8, 8, 0, 0]}
-                  animationBegin={180}
                   animationDuration={1100}
-                  animationEasing="ease-out"
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="rounded-2xl border bg-surface-raised p-5 card-shadow transition-shadow duration-300 hover:card-shadow-hover">
-            <div className="flex items-center gap-2 mb-1">
-              <Layers className="h-4 w-4 text-ocean" />
-              <h3 className="text-sm font-semibold">Carbono irrecuperable por región</h3>
-            </div>
-            <p className="text-xs text-muted-foreground mb-4">
-              {region === "todas"
-                ? "Distribución porcentual simulada entre las cuatro regiones del país."
-                : `Reservorios críticos simulados por ecosistema en ${regionLabel}.`}
-            </p>
-            <ResponsiveContainer width="100%" height={260}>
-              <PieChart key={region}>
-                <Pie
-                  data={carbono}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="45%"
-                  innerRadius={58}
-                  outerRadius={95}
-                  paddingAngle={3}
-                  cornerRadius={6}
-                  stroke="hsl(var(--card))"
-                  strokeWidth={2}
-                  animationDuration={1200}
                   animationEasing="ease-out"
                 >
-                  {carbono.map((entry, i) => (
-                    <Cell key={entry.name} fill={pieColors[i % pieColors.length]} />
+                  {carbonoData.map((d, i) => (
+                    <Cell
+                      key={d.nombre}
+                      fill={i === 0 ? "url(#gradCarbono)" : "hsl(var(--muted-foreground) / 0.35)"}
+                    />
                   ))}
-                </Pie>
-                <ReTooltip
-                  contentStyle={tooltipStyle}
-                  formatter={(v: number, n: string) => [`${v}% del carbono · ${regionLabel}`, n]}
-                />
-                <Legend iconType="circle" wrapperStyle={{ fontSize: 12 }} />
-              </PieChart>
+                </Bar>
+              </BarChart>
             </ResponsiveContainer>
-          </div>
           </div>
         </section>
       </div>
