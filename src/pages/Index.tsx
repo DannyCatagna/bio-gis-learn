@@ -288,56 +288,95 @@ const Index = () => {
 
         {/* Paneles de datos */}
         <section className="grid gap-4 lg:grid-cols-2">
-          <div className="rounded-2xl border bg-surface-raised p-5 card-shadow">
-            <div className="flex items-center gap-2 mb-4">
+          <div className="rounded-2xl border bg-surface-raised p-5 card-shadow transition-shadow duration-300 hover:card-shadow-hover">
+            <div className="flex items-center gap-2 mb-1">
               <Flame className="h-4 w-4 text-paramo" />
               <h3 className="text-sm font-semibold">Especies protegidas en conflicto</h3>
             </div>
-            <ResponsiveContainer width="100%" height={240}>
-              <BarChart data={especies}>
+            <p className="text-xs text-muted-foreground mb-4">
+              Registros simulados por grupo taxonómico dentro del SNAP (2024).
+            </p>
+            <ResponsiveContainer width="100%" height={260}>
+              <BarChart data={especies} margin={{ top: 8, right: 8, left: -16, bottom: 0 }} barGap={4}>
+                <defs>
+                  <linearGradient id="gradConflicto" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="hsl(var(--jungle))" stopOpacity={1} />
+                    <stop offset="100%" stopColor="hsl(var(--jungle))" stopOpacity={0.45} />
+                  </linearGradient>
+                  <linearGradient id="gradMonitoreo" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="hsl(var(--ocean))" stopOpacity={0.85} />
+                    <stop offset="100%" stopColor="hsl(var(--ocean))" stopOpacity={0.3} />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
-                <XAxis dataKey="nombre" tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
-                <YAxis tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
-                <ReTooltip
-                  contentStyle={{
-                    borderRadius: 12,
-                    border: "1px solid hsl(var(--border))",
-                    background: "hsl(var(--card))",
-                  }}
+                <XAxis
+                  dataKey="nombre"
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
                 />
-                <Bar dataKey="valor" radius={[8, 8, 0, 0]} fill="hsl(var(--jungle))" animationDuration={900} />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                />
+                <ReTooltip
+                  cursor={{ fill: "hsl(var(--muted))", opacity: 0.5 }}
+                  contentStyle={tooltipStyle}
+                />
+                <Legend iconType="circle" wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
+                <Bar
+                  name="En conflicto"
+                  dataKey="enConflicto"
+                  fill="url(#gradConflicto)"
+                  radius={[8, 8, 0, 0]}
+                  animationDuration={1100}
+                  animationEasing="ease-out"
+                />
+                <Bar
+                  name="Monitoreadas"
+                  dataKey="monitoreadas"
+                  fill="url(#gradMonitoreo)"
+                  radius={[8, 8, 0, 0]}
+                  animationBegin={180}
+                  animationDuration={1100}
+                  animationEasing="ease-out"
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
-          <div className="rounded-2xl border bg-surface-raised p-5 card-shadow">
-            <div className="flex items-center gap-2 mb-4">
+          <div className="rounded-2xl border bg-surface-raised p-5 card-shadow transition-shadow duration-300 hover:card-shadow-hover">
+            <div className="flex items-center gap-2 mb-1">
               <Layers className="h-4 w-4 text-ocean" />
               <h3 className="text-sm font-semibold">Carbono irrecuperable por región</h3>
             </div>
-            <ResponsiveContainer width="100%" height={240}>
+            <p className="text-xs text-muted-foreground mb-4">
+              Distribución porcentual simulada de reservorios críticos de carbono.
+            </p>
+            <ResponsiveContainer width="100%" height={260}>
               <PieChart>
                 <Pie
                   data={carbono}
                   dataKey="value"
                   nameKey="name"
-                  innerRadius={55}
-                  outerRadius={90}
+                  cx="50%"
+                  cy="45%"
+                  innerRadius={58}
+                  outerRadius={95}
                   paddingAngle={3}
-                  isAnimationActive={false}
+                  cornerRadius={6}
+                  stroke="hsl(var(--card))"
+                  strokeWidth={2}
+                  animationDuration={1200}
+                  animationEasing="ease-out"
                 >
-                  {carbono.map((_, i) => (
-                    <Cell key={i} fill={pieColors[i % pieColors.length]} />
+                  {carbono.map((entry, i) => (
+                    <Cell key={entry.name} fill={pieColors[i % pieColors.length]} />
                   ))}
                 </Pie>
+                <ReTooltip formatter={(v: number) => `${v}%`} contentStyle={tooltipStyle} />
                 <Legend iconType="circle" wrapperStyle={{ fontSize: 12 }} />
-                <ReTooltip
-                  contentStyle={{
-                    borderRadius: 12,
-                    border: "1px solid hsl(var(--border))",
-                    background: "hsl(var(--card))",
-                  }}
-                />
               </PieChart>
             </ResponsiveContainer>
           </div>
