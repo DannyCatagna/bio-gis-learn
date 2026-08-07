@@ -109,13 +109,13 @@ const tonoClases = {
   },
 };
 
-/* ---------------- Datos de gráficos ---------------- */
+/* ---------------- Datos simulados de los paneles ---------------- */
 const especies = [
-  { nombre: "Anfibios", valor: 42 },
-  { nombre: "Aves", valor: 31 },
-  { nombre: "Mamíferos", valor: 24 },
-  { nombre: "Reptiles", valor: 18 },
-  { nombre: "Plantas", valor: 55 },
+  { nombre: "Anfibios", enConflicto: 42, monitoreadas: 58 },
+  { nombre: "Aves", enConflicto: 31, monitoreadas: 74 },
+  { nombre: "Mamíferos", enConflicto: 24, monitoreadas: 46 },
+  { nombre: "Reptiles", enConflicto: 18, monitoreadas: 29 },
+  { nombre: "Plantas", enConflicto: 55, monitoreadas: 92 },
 ];
 
 const carbono = [
@@ -129,8 +129,17 @@ const pieColors = [
   "hsl(var(--jungle))",
   "hsl(var(--ocean))",
   "hsl(var(--paramo))",
-  "hsl(var(--muted-foreground))",
+  "hsl(153 30% 45%)",
 ];
+
+const tooltipStyle = {
+  borderRadius: 12,
+  border: "1px solid hsl(var(--border))",
+  background: "hsl(var(--card))",
+  boxShadow: "var(--card-shadow-hover)",
+  fontSize: 12,
+};
+
 
 const Index = () => {
   const [collapsed, setCollapsed] = useState(false);
