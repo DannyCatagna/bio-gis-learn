@@ -369,52 +369,68 @@ const Index = () => {
         </section>
 
         {/* Paneles de datos */}
-        <section className="space-y-4">
-          {/* Filtro de región */}
-          <div className="flex flex-wrap items-center gap-2 rounded-2xl border bg-surface-raised p-3 card-shadow">
-            <span className="flex items-center gap-2 text-xs font-semibold text-muted-foreground mr-1">
-              <Filter className="h-4 w-4 text-ocean" />
-              Filtrar por región
-            </span>
-            {regiones.map((r) => {
-              const activa = region === r.id;
-              return (
-                <button
-                  key={r.id}
-                  onClick={() => setRegion(r.id)}
-                  aria-pressed={activa}
-                  className={`rounded-full px-4 min-h-[36px] text-xs font-semibold transition-all duration-200 ${
-                    activa
-                      ? "bg-jungle text-jungle-foreground shadow-md scale-[1.03]"
-                      : "bg-muted text-muted-foreground hover:bg-muted/70 hover:text-foreground"
-                  }`}
-                >
-                  {r.label}
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="grid gap-4 lg:grid-cols-2">
-          <div className="rounded-2xl border bg-surface-raised p-5 card-shadow transition-shadow duration-300 hover:card-shadow-hover">
+        <section className="grid gap-4 lg:grid-cols-2">
+          {/* Distribución de superficie */}
+          <div className="rounded-2xl border bg-surface-raised p-6 card-shadow transition-shadow duration-300 hover:card-shadow-hover">
             <div className="flex items-center gap-2 mb-1">
-              <Flame className="h-4 w-4 text-paramo" />
-              <h3 className="text-sm font-semibold">Especies protegidas en conflicto</h3>
+              <Layers className="h-4 w-4 text-ocean" />
+              <h3 className="text-sm font-semibold">Distribución de superficie del SNAP</h3>
             </div>
-            <p className="text-xs text-muted-foreground mb-4">
-              {regionLabel} · registros simulados por grupo taxonómico en el SNAP (2024). Total en
-              conflicto: <span className="font-semibold text-jungle">{totalConflicto}</span> especies.
+            <p className="text-xs leading-relaxed text-muted-foreground mb-4">
+              Sobre un total conservado de{" "}
+              <span className="font-semibold text-jungle">26.477.811 hectáreas</span> distribuidas en{" "}
+              <span className="font-semibold text-jungle">81 áreas protegidas</span> declaradas.
             </p>
             <ResponsiveContainer width="100%" height={260}>
-              <BarChart key={region} data={especies} margin={{ top: 8, right: 8, left: -16, bottom: 0 }} barGap={4}>
+              <PieChart>
+                <Pie
+                  data={superficieData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="45%"
+                  innerRadius={58}
+                  outerRadius={95}
+                  paddingAngle={3}
+                  cornerRadius={6}
+                  stroke="hsl(var(--card))"
+                  strokeWidth={2}
+                  animationDuration={1200}
+                  animationEasing="ease-out"
+                  label={({ value }) => `${String(value).replace(".", ",")}%`}
+                  labelLine={false}
+                >
+                  {superficieData.map((entry, i) => (
+                    <Cell key={entry.name} fill={pieColors[i % pieColors.length]} />
+                  ))}
+                </Pie>
+                <ReTooltip
+                  contentStyle={tooltipStyle}
+                  formatter={(v: number, n: string) => [`${String(v).replace(".", ",")}%`, n]}
+                />
+                <Legend iconType="circle" wrapperStyle={{ fontSize: 12 }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Carbono irrecuperable */}
+          <div className="rounded-2xl border bg-surface-raised p-6 card-shadow transition-shadow duration-300 hover:card-shadow-hover">
+            <div className="flex items-center gap-2 mb-1">
+              <Flame className="h-4 w-4 text-paramo" />
+              <h3 className="text-sm font-semibold">Carbono irrecuperable (MtC)</h3>
+            </div>
+            <p className="text-xs leading-relaxed text-muted-foreground mb-4">
+              Las áreas protegidas del SNAP concentran{" "}
+              <span className="font-semibold text-paramo">277 MtC</span> de carbono irrecuperable, lo
+              que corresponde al <span className="font-semibold text-paramo">32,6%</span> del total
+              nacional.
+            </p>
+            <ResponsiveContainer width="100%" height={260}>
+              <BarChart data={carbonoData} margin={{ top: 8, right: 8, left: -8, bottom: 0 }}>
                 <defs>
-                  <linearGradient id="gradConflicto" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="hsl(var(--jungle))" stopOpacity={1} />
-                    <stop offset="100%" stopColor="hsl(var(--jungle))" stopOpacity={0.45} />
-                  </linearGradient>
-                  <linearGradient id="gradMonitoreo" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="hsl(var(--ocean))" stopOpacity={0.85} />
-                    <stop offset="100%" stopColor="hsl(var(--ocean))" stopOpacity={0.3} />
+                  <linearGradient id="gradCarbono" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="hsl(var(--paramo))" stopOpacity={1} />
+                    <stop offset="100%" stopColor="hsl(var(--paramo))" stopOpacity={0.4} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
@@ -432,70 +448,24 @@ const Index = () => {
                 <ReTooltip
                   cursor={{ fill: "hsl(var(--muted))", opacity: 0.5 }}
                   contentStyle={tooltipStyle}
-                  labelFormatter={(l) => `${l} · ${regionLabel}`}
-                  formatter={(v: number, n: string) => [`${v} especies`, n]}
-                />
-                <Legend iconType="circle" wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
-                <Bar
-                  name="En conflicto"
-                  dataKey="enConflicto"
-                  fill="url(#gradConflicto)"
-                  radius={[8, 8, 0, 0]}
-                  animationDuration={1100}
-                  animationEasing="ease-out"
+                  formatter={(v: number) => [`${String(v).replace(".", ",")} MtC`, "Carbono irrecuperable"]}
                 />
                 <Bar
-                  name="Monitoreadas"
-                  dataKey="monitoreadas"
-                  fill="url(#gradMonitoreo)"
+                  name="Carbono irrecuperable"
+                  dataKey="valor"
                   radius={[8, 8, 0, 0]}
-                  animationBegin={180}
                   animationDuration={1100}
-                  animationEasing="ease-out"
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="rounded-2xl border bg-surface-raised p-5 card-shadow transition-shadow duration-300 hover:card-shadow-hover">
-            <div className="flex items-center gap-2 mb-1">
-              <Layers className="h-4 w-4 text-ocean" />
-              <h3 className="text-sm font-semibold">Carbono irrecuperable por región</h3>
-            </div>
-            <p className="text-xs text-muted-foreground mb-4">
-              {region === "todas"
-                ? "Distribución porcentual simulada entre las cuatro regiones del país."
-                : `Reservorios críticos simulados por ecosistema en ${regionLabel}.`}
-            </p>
-            <ResponsiveContainer width="100%" height={260}>
-              <PieChart key={region}>
-                <Pie
-                  data={carbono}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="45%"
-                  innerRadius={58}
-                  outerRadius={95}
-                  paddingAngle={3}
-                  cornerRadius={6}
-                  stroke="hsl(var(--card))"
-                  strokeWidth={2}
-                  animationDuration={1200}
                   animationEasing="ease-out"
                 >
-                  {carbono.map((entry, i) => (
-                    <Cell key={entry.name} fill={pieColors[i % pieColors.length]} />
+                  {carbonoData.map((d, i) => (
+                    <Cell
+                      key={d.nombre}
+                      fill={i === 0 ? "url(#gradCarbono)" : "hsl(var(--muted-foreground) / 0.35)"}
+                    />
                   ))}
-                </Pie>
-                <ReTooltip
-                  contentStyle={tooltipStyle}
-                  formatter={(v: number, n: string) => [`${v}% del carbono · ${regionLabel}`, n]}
-                />
-                <Legend iconType="circle" wrapperStyle={{ fontSize: 12 }} />
-              </PieChart>
+                </Bar>
+              </BarChart>
             </ResponsiveContainer>
-          </div>
           </div>
         </section>
       </div>
