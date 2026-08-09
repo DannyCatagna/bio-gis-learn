@@ -7,6 +7,7 @@ import {
   Compass,
   LayoutDashboard,
   Map as MapIcon,
+  Trees,
   Trophy,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -16,6 +17,7 @@ const links = [
   { label: "Introducción SIG", path: "/introduccion", icon: Compass },
   { label: "Guías Didácticas", path: "/guias", icon: BookOpen },
   { label: "Mapa Interactivo", path: "/mapa", icon: MapIcon },
+  { label: "Áreas Protegidas", path: "/areas-protegidas", icon: Trees },
   { label: "Evaluación", path: "/evaluacion", icon: ClipboardCheck },
 ];
 
