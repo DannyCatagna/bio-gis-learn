@@ -32,7 +32,9 @@ const App = () => (
                 <Route path="/guias" element={<Guias />} />
                 <Route path="/guias/:id" element={<GuiaDetalle />} />
                 <Route path="/mapa" element={<MapaInteractivo />} />
+                <Route path="/areas-protegidas" element={<AreasProtegidas />} />
                 <Route path="/evaluacion" element={<Evaluacion />} />
+
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
