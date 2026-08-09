@@ -11,6 +11,7 @@ import Guias from "./pages/Guias";
 import GuiaDetalle from "./pages/GuiaDetalle";
 import Evaluacion from "./pages/Evaluacion";
 import MapaInteractivo from "./pages/MapaInteractivo";
+import AreasProtegidas from "./pages/AreasProtegidas";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
