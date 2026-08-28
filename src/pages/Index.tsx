@@ -160,8 +160,8 @@ const CARBONO_NACIONAL = Math.round((CARBONO_SNAP / (CARBONO_PORCENTAJE / 100)) 
 const carbonoData = [
   { nombre: "Dentro del SNAP", valor: CARBONO_SNAP },
   { nombre: "Fuera del SNAP", valor: Math.round((CARBONO_NACIONAL - CARBONO_SNAP) * 10) / 10 },
-  { nombre: "Total nacional", valor: CARBONO_NACIONAL },
 ];
+
 
 const pieColors = ["hsl(var(--ocean))", "hsl(var(--jungle))"];
 
