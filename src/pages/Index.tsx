@@ -35,6 +35,9 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import FundamentacionTeorica from "@/components/dashboard/FundamentacionTeorica";
+import GuiasSIG from "@/components/dashboard/GuiasSIG";
+
 
 /* ---------------- Capas cartográficas simuladas ---------------- */
 const capas = [
@@ -160,8 +163,8 @@ const CARBONO_NACIONAL = Math.round((CARBONO_SNAP / (CARBONO_PORCENTAJE / 100)) 
 const carbonoData = [
   { nombre: "Dentro del SNAP", valor: CARBONO_SNAP },
   { nombre: "Fuera del SNAP", valor: Math.round((CARBONO_NACIONAL - CARBONO_SNAP) * 10) / 10 },
-  { nombre: "Total nacional", valor: CARBONO_NACIONAL },
 ];
+
 
 const pieColors = ["hsl(var(--ocean))", "hsl(var(--jungle))"];
 
@@ -183,6 +186,18 @@ const Index = () => {
     conflicto: false,
   });
 
+  const activarCapas = (labels: string[]) => {
+    const ids = capas.filter((c) => labels.includes(c.label)).map((c) => c.id);
+    setActivas((prev) => {
+      const next = { ...prev };
+      capas.forEach((c) => (next[c.id] = ids.includes(c.id)));
+      return next;
+    });
+    document.getElementById("visor")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+
+
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] bg-surface">
@@ -199,8 +214,9 @@ const Index = () => {
           </div>
           <div className="flex gap-2">
             <span className="rounded-full bg-jungle/10 text-jungle px-3 py-1 text-xs font-semibold">
-              4 capas disponibles
+              {capas.length} capas disponibles
             </span>
+
             <span className="rounded-full bg-ocean/10 text-ocean px-3 py-1 text-xs font-semibold">
               SNAP 2024
             </span>
@@ -208,7 +224,8 @@ const Index = () => {
         </header>
 
         {/* Visor central */}
-        <section className="relative rounded-2xl overflow-hidden border bg-surface-raised card-shadow">
+        <section id="visor" className="relative scroll-mt-20 rounded-2xl overflow-hidden border bg-surface-raised card-shadow">
+
           <div className="h-[380px] md:h-[480px]">
             <MapContainer
               center={[-1.8312, -78.1834]}
@@ -316,6 +333,11 @@ const Index = () => {
           })}
         </section>
 
+        {/* Fundamentación teórica */}
+        <FundamentacionTeorica />
+
+        {/* Guías didácticas SIG */}
+        <GuiasSIG onActivarCapas={activarCapas} />
 
 
         {/* Misiones */}
