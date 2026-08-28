@@ -35,6 +35,9 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import FundamentacionTeorica from "@/components/dashboard/FundamentacionTeorica";
+import GuiasSIG from "@/components/dashboard/GuiasSIG";
+
 
 /* ---------------- Capas cartográficas simuladas ---------------- */
 const capas = [
@@ -182,6 +185,18 @@ const Index = () => {
     carbono: true,
     conflicto: false,
   });
+
+  const activarCapas = (labels: string[]) => {
+    const ids = capas.filter((c) => labels.includes(c.label)).map((c) => c.id);
+    setActivas((prev) => {
+      const next = { ...prev };
+      capas.forEach((c) => (next[c.id] = ids.includes(c.id)));
+      return next;
+    });
+    document.getElementById("visor")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+
 
 
   return (
