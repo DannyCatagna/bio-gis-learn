@@ -214,8 +214,9 @@ const Index = () => {
           </div>
           <div className="flex gap-2">
             <span className="rounded-full bg-jungle/10 text-jungle px-3 py-1 text-xs font-semibold">
-              4 capas disponibles
+              {capas.length} capas disponibles
             </span>
+
             <span className="rounded-full bg-ocean/10 text-ocean px-3 py-1 text-xs font-semibold">
               SNAP 2024
             </span>
@@ -223,7 +224,8 @@ const Index = () => {
         </header>
 
         {/* Visor central */}
-        <section className="relative rounded-2xl overflow-hidden border bg-surface-raised card-shadow">
+        <section id="visor" className="relative scroll-mt-20 rounded-2xl overflow-hidden border bg-surface-raised card-shadow">
+
           <div className="h-[380px] md:h-[480px]">
             <MapContainer
               center={[-1.8312, -78.1834]}
@@ -331,6 +333,11 @@ const Index = () => {
           })}
         </section>
 
+        {/* Fundamentación teórica */}
+        <FundamentacionTeorica />
+
+        {/* Guías didácticas SIG */}
+        <GuiasSIG onActivarCapas={activarCapas} />
 
 
         {/* Misiones */}
