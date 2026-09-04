@@ -348,13 +348,13 @@ const Index = () => {
         </section>
 
         {/* KPIs */}
-        <section className="grid gap-4 md:grid-cols-3">
+        <section className="mt-4 grid gap-4 md:grid-cols-3">
           {kpis.map((k) => {
             const t = tonoClases[k.tono];
             return (
               <article
                 key={k.label}
-                className="rounded-2xl border bg-surface-raised p-6 card-shadow transition-shadow duration-300 hover:card-shadow-hover"
+                className="rounded-2xl border bg-surface p-6 card-shadow transition-shadow duration-300 hover:card-shadow-hover"
               >
                 <div className={`h-11 w-11 rounded-xl grid place-items-center ${t.chip}`}>
                   <k.icon className="h-5 w-5" />
