@@ -235,16 +235,18 @@ const Index = () => {
     <div className="flex min-h-[calc(100vh-4rem)] bg-surface">
       <DashboardSidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
 
-      <div className="flex-1 min-w-0 p-4 md:p-6 space-y-6">
-        {/* Encabezado compacto */}
-        <header className="flex flex-wrap items-end justify-between gap-3">
+      <div className="flex-1 min-w-0">
+        {/* ===== Bloque 1 · Visor cartográfico ===== */}
+        <div className="bg-surface px-4 py-8 md:px-8 md:py-12">
+        <header className="flex flex-wrap items-end justify-between gap-3 mb-6">
           <div>
-            <h1 className="text-xl md:text-2xl font-bold">Visor SIG · Biodiversidad del Ecuador</h1>
-            <p className="text-sm text-muted-foreground">
+            <span className="text-xs font-semibold uppercase tracking-widest text-jungle">Bloque 01</span>
+            <h1 className="text-xl md:text-3xl font-bold">Visor SIG · Biodiversidad del Ecuador</h1>
+            <p className="text-sm text-muted-foreground max-w-xl">
               Explora capas cartográficas y avanza en tus misiones de aprendizaje.
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <span className="rounded-full bg-jungle/10 text-jungle px-3 py-1 text-xs font-semibold">
               {capas.length} capas disponibles
             </span>
@@ -257,6 +259,7 @@ const Index = () => {
 
         {/* Visor central */}
         <section id="visor" className="relative scroll-mt-20 rounded-2xl overflow-hidden border bg-surface-raised card-shadow">
+
 
           <div className="h-[380px] md:h-[480px]">
             <MapContainer
