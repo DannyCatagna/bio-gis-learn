@@ -385,6 +385,9 @@ const Index = () => {
 
         {/* ===== Bloque 4 · Guías didácticas ===== */}
         <div className="border-t bg-surface-raised px-4 py-10 md:px-8 md:py-14">
+          <div className="mb-4">
+            <span className="text-xs font-semibold uppercase tracking-widest text-ocean">Bloque 03</span>
+          </div>
           <GuiasSIG onActivarCapas={activarCapas} />
         </div>
 
@@ -392,10 +395,14 @@ const Index = () => {
         <div className="border-t bg-surface px-4 py-10 md:px-8 md:py-14">
         <section>
 
-          <div className="flex items-center gap-2 mb-4">
-            <TreePine className="h-5 w-5 text-jungle" />
-            <h2 className="text-lg font-bold">Retos constructivistas</h2>
+          <div className="mb-4">
+            <span className="text-xs font-semibold uppercase tracking-widest text-paramo">Bloque 04</span>
+            <div className="flex items-center gap-2">
+              <TreePine className="h-5 w-5 text-jungle" />
+              <h2 className="text-lg md:text-xl font-bold">Retos constructivistas</h2>
+            </div>
           </div>
+
           <div className="grid gap-4 md:grid-cols-3">
             {misiones.map((m) => {
               const t = tonoClases[m.tono];
