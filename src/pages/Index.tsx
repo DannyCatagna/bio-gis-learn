@@ -421,9 +421,16 @@ const Index = () => {
             })}
           </div>
         </section>
+        </div>
 
-        {/* Paneles de datos */}
+        {/* ===== Bloque 6 · Paneles de datos ===== */}
+        <div className="border-t bg-surface-raised px-4 py-10 md:px-8 md:py-14">
+        <div className="mb-6">
+          <span className="text-xs font-semibold uppercase tracking-widest text-ocean">Bloque 05</span>
+          <h2 className="text-lg md:text-xl font-bold">Paneles de datos del SNAP</h2>
+        </div>
         <section className="grid gap-4 lg:grid-cols-2">
+
           {/* Distribución de superficie */}
           <div className="rounded-2xl border bg-surface-raised p-6 card-shadow transition-shadow duration-300 hover:card-shadow-hover">
             <div className="flex items-center gap-2 mb-1">
