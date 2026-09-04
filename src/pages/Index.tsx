@@ -302,7 +302,7 @@ const Index = () => {
           </div>
 
           {/* Menú flotante glassmorphism */}
-          <div className="absolute top-4 right-4 z-[1000] w-64 rounded-2xl glass p-4">
+          <div className="absolute top-4 right-4 z-[1000] w-56 md:w-64 max-h-[calc(100%-2rem)] overflow-y-auto rounded-2xl glass p-4">
             <div className="flex items-center gap-2 mb-3">
               <Layers className="h-4 w-4 text-jungle" />
               <span className="text-sm font-semibold">Capas cartográficas</span>
