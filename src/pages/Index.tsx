@@ -376,11 +376,10 @@ const Index = () => {
 
         {/* ===== Bloque 3 · Fundamentación teórica ===== */}
         <div className="border-t bg-surface px-4 py-10 md:px-8 md:py-14">
-          <div className="mb-6">
+          <div className="mb-4">
             <span className="text-xs font-semibold uppercase tracking-widest text-jungle">Bloque 02</span>
-            <h2 className="text-lg md:text-xl font-bold">Fundamentación teórica</h2>
-            <p className="text-sm text-muted-foreground">Unidades 2 y 3 del sílabo de Biodiversidad del Ecuador.</p>
           </div>
+
           <FundamentacionTeorica />
         </div>
 
