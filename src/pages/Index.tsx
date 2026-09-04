@@ -365,15 +365,27 @@ const Index = () => {
           })}
         </section>
 
-        {/* Fundamentación teórica */}
-        <FundamentacionTeorica />
+        </div>
 
-        {/* Guías didácticas SIG */}
-        <GuiasSIG onActivarCapas={activarCapas} />
+        {/* ===== Bloque 3 · Fundamentación teórica ===== */}
+        <div className="border-t bg-surface px-4 py-10 md:px-8 md:py-14">
+          <div className="mb-6">
+            <span className="text-xs font-semibold uppercase tracking-widest text-jungle">Bloque 02</span>
+            <h2 className="text-lg md:text-xl font-bold">Fundamentación teórica</h2>
+            <p className="text-sm text-muted-foreground">Unidades 2 y 3 del sílabo de Biodiversidad del Ecuador.</p>
+          </div>
+          <FundamentacionTeorica />
+        </div>
 
+        {/* ===== Bloque 4 · Guías didácticas ===== */}
+        <div className="border-t bg-surface-raised px-4 py-10 md:px-8 md:py-14">
+          <GuiasSIG onActivarCapas={activarCapas} />
+        </div>
 
-        {/* Misiones */}
+        {/* ===== Bloque 5 · Misiones ===== */}
+        <div className="border-t bg-surface px-4 py-10 md:px-8 md:py-14">
         <section>
+
           <div className="flex items-center gap-2 mb-4">
             <TreePine className="h-5 w-5 text-jungle" />
             <h2 className="text-lg font-bold">Retos constructivistas</h2>
