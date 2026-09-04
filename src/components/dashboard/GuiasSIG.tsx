@@ -248,8 +248,9 @@ const GuiasSIG = ({ onActivarCapas }: Props) => (
       <h2 className="text-lg font-bold">Guías didácticas SIG</h2>
     </div>
     <p className="text-sm text-muted-foreground mb-4">
-      Hojas de trabajo interactivas vinculadas al visor cartográfico superior.
+      Cuatro hojas de trabajo interactivas vinculadas al visor cartográfico superior.
     </p>
+
     <div className="grid gap-4 lg:grid-cols-2">
       {guias.map((g) => (
         <GuiaCard key={g.id} guia={g} onActivarCapas={onActivarCapas} />
