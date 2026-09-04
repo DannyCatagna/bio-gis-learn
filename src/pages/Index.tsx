@@ -329,9 +329,13 @@ const Index = () => {
             </div>
           </div>
         </section>
+        </div>
 
+        {/* ===== Bloque 2 · Datos oficiales ===== */}
+        <div className="border-t bg-surface-raised px-4 py-10 md:px-8 md:py-14">
         {/* Definición oficial del SNAP */}
-        <section className="rounded-2xl border bg-surface-raised p-6 md:p-8 card-shadow">
+        <section className="rounded-2xl border bg-surface p-6 md:p-8 card-shadow">
+
           <div className="flex items-center gap-2 mb-3">
             <Info className="h-5 w-5 text-ocean" />
             <h2 className="text-base md:text-lg font-bold">
