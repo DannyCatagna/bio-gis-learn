@@ -71,7 +71,39 @@ const capas = [
       { n: "Frontera agrícola sur", p: [-3.6, -79.4] as [number, number], r: 12 },
     ],
   },
+  {
+    id: "florafauna",
+    label: "Flora y Fauna Emblemática",
+    color: "hsl(var(--jungle))",
+    puntos: [
+      { n: "Oso andino · Cayambe Coca", p: [-0.13, -77.95] as [number, number], r: 12 },
+      { n: "Cóndor andino · Antisana", p: [-0.48, -78.14] as [number, number], r: 11 },
+      { n: "Jaguar · Cuyabeno", p: [-0.25, -76.18] as [number, number], r: 13 },
+      { n: "Manglar · Churute", p: [-2.42, -79.62] as [number, number], r: 10 },
+    ],
+  },
+  {
+    id: "mineria",
+    label: "Conflictos Mineros y Agrícolas",
+    color: "hsl(var(--paramo))",
+    puntos: [
+      { n: "Minería · Cordillera del Cóndor", p: [-3.5, -78.3] as [number, number], r: 14 },
+      { n: "Minería · Íntag (Chocó Andino)", p: [0.35, -78.55] as [number, number], r: 11 },
+      { n: "Expansión agrícola · Manabí", p: [-1.05, -80.2] as [number, number], r: 12 },
+    ],
+  },
+  {
+    id: "endemismo",
+    label: "Endemismo (rango restringido)",
+    color: "hsl(var(--ocean))",
+    puntos: [
+      { n: "Frailejones · R.E. El Ángel", p: [0.72, -78.0] as [number, number], r: 12 },
+      { n: "Anfibios · Chocó Andino", p: [0.05, -78.68] as [number, number], r: 11 },
+      { n: "Orquídeas · Podocarpus", p: [-4.12, -79.13] as [number, number], r: 11 },
+    ],
+  },
 ];
+
 
 /* ---------------- Misiones (retos constructivistas) ---------------- */
 const misiones = [
