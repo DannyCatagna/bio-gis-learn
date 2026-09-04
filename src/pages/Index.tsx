@@ -522,7 +522,9 @@ const Index = () => {
             </ResponsiveContainer>
           </div>
         </section>
+        </div>
       </div>
+
     </div>
   );
 };
