@@ -94,7 +94,54 @@ const guias: Guia[] = [
     tono: "paramo",
     icon: Layers,
   },
+  {
+    id: "g3",
+    unidad: "Unidad 3 · Guía 3",
+    titulo: "Límites cartográficos y cobertura del SNAP",
+    objetivo:
+      "Categorizar las estrategias de manejo del Sistema Nacional de Áreas Protegidas a partir de sus límites territoriales y su representatividad ecosistémica.",
+    reto:
+      "Reto de delimitación: activa la capa del SNAP junto con la de endemismo y determina qué áreas protegidas concentran especies de rango restringido y cuáles quedan como vacíos de conservación.",
+    capas: ["Áreas Protegidas (SNAP)", "Endemismo (rango restringido)"],
+    pasos: [
+      "Activa las capas Áreas Protegidas (SNAP) y Endemismo en el visor.",
+      "Recorre las tres regiones continentales: Costa, Sierra y Amazonía.",
+      "Anota la categoría de manejo de al menos tres áreas observadas.",
+      "Identifica un núcleo de endemismo sin cobertura del SNAP.",
+      "Argumenta qué categoría de manejo sería la más adecuada para ese vacío.",
+    ],
+    tip: "Tip SIG: la representatividad se evalúa cruzando límites administrativos con la distribución real de los ecosistemas.",
+    evidencia: "Áreas y categorías de manejo registradas, vacío de conservación detectado y propuesta de categoría.",
+    tono: "ocean",
+    icon: MapPinned,
+  },
+  {
+    id: "g4",
+    unidad: "Unidad 3 · Guía 4",
+    titulo: "Superposición espacial: conflictos territoriales y zonas de amortiguamiento comunitarias",
+    objetivo:
+      "Evaluar la interacción entre la conservación in situ y las presiones antrópicas, proponiendo zonas de amortiguamiento gestionadas con las comunidades locales.",
+    reto:
+      "Reto de amortiguamiento: superpone SNAP, conflictos mineros/agrícolas y flora y fauna emblemática, y define un buffer de 2 a 5 km donde la gestión comunitaria sea prioritaria.",
+    capas: [
+      "Áreas Protegidas (SNAP)",
+      "Conflictos Mineros y Agrícolas",
+      "Flora y Fauna Emblemática",
+    ],
+    pasos: [
+      "Activa las tres capas indicadas en el menú flotante del visor.",
+      "Localiza los puntos donde la presión extractiva bordea un área protegida.",
+      "Delimita mentalmente un buffer de 2 a 5 km alrededor del límite.",
+      "Registra la fauna emblemática afectada dentro de ese buffer.",
+      "Propón una acción de co-manejo comunitario para la zona.",
+    ],
+    tip: "Tip SIG: el buffer convierte un límite en una franja de gestión; ahí es donde se negocia el uso del suelo.",
+    evidencia: "Zona de amortiguamiento propuesta, especies afectadas y acción de gobernanza comunitaria.",
+    tono: "jungle",
+    icon: Layers,
+  },
 ];
+
 
 interface Props {
   onActivarCapas: (labels: string[]) => void;
