@@ -71,7 +71,39 @@ const capas = [
       { n: "Frontera agrícola sur", p: [-3.6, -79.4] as [number, number], r: 12 },
     ],
   },
+  {
+    id: "florafauna",
+    label: "Flora y Fauna Emblemática",
+    color: "hsl(var(--jungle))",
+    puntos: [
+      { n: "Oso andino · Cayambe Coca", p: [-0.13, -77.95] as [number, number], r: 12 },
+      { n: "Cóndor andino · Antisana", p: [-0.48, -78.14] as [number, number], r: 11 },
+      { n: "Jaguar · Cuyabeno", p: [-0.25, -76.18] as [number, number], r: 13 },
+      { n: "Manglar · Churute", p: [-2.42, -79.62] as [number, number], r: 10 },
+    ],
+  },
+  {
+    id: "mineria",
+    label: "Conflictos Mineros y Agrícolas",
+    color: "hsl(var(--paramo))",
+    puntos: [
+      { n: "Minería · Cordillera del Cóndor", p: [-3.5, -78.3] as [number, number], r: 14 },
+      { n: "Minería · Íntag (Chocó Andino)", p: [0.35, -78.55] as [number, number], r: 11 },
+      { n: "Expansión agrícola · Manabí", p: [-1.05, -80.2] as [number, number], r: 12 },
+    ],
+  },
+  {
+    id: "endemismo",
+    label: "Endemismo (rango restringido)",
+    color: "hsl(var(--ocean))",
+    puntos: [
+      { n: "Frailejones · R.E. El Ángel", p: [0.72, -78.0] as [number, number], r: 12 },
+      { n: "Anfibios · Chocó Andino", p: [0.05, -78.68] as [number, number], r: 11 },
+      { n: "Orquídeas · Podocarpus", p: [-4.12, -79.13] as [number, number], r: 11 },
+    ],
+  },
 ];
+
 
 /* ---------------- Misiones (retos constructivistas) ---------------- */
 const misiones = [
@@ -203,16 +235,18 @@ const Index = () => {
     <div className="flex min-h-[calc(100vh-4rem)] bg-surface">
       <DashboardSidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
 
-      <div className="flex-1 min-w-0 p-4 md:p-6 space-y-6">
-        {/* Encabezado compacto */}
-        <header className="flex flex-wrap items-end justify-between gap-3">
+      <div className="flex-1 min-w-0">
+        {/* ===== Bloque 1 · Visor cartográfico ===== */}
+        <div className="bg-surface px-4 py-8 md:px-8 md:py-12">
+        <header className="flex flex-wrap items-end justify-between gap-3 mb-6">
           <div>
-            <h1 className="text-xl md:text-2xl font-bold">Visor SIG · Biodiversidad del Ecuador</h1>
-            <p className="text-sm text-muted-foreground">
+            <span className="text-xs font-semibold uppercase tracking-widest text-jungle">Bloque 01</span>
+            <h1 className="text-xl md:text-3xl font-bold">Visor SIG · Biodiversidad del Ecuador</h1>
+            <p className="text-sm text-muted-foreground max-w-xl">
               Explora capas cartográficas y avanza en tus misiones de aprendizaje.
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <span className="rounded-full bg-jungle/10 text-jungle px-3 py-1 text-xs font-semibold">
               {capas.length} capas disponibles
             </span>
@@ -225,6 +259,7 @@ const Index = () => {
 
         {/* Visor central */}
         <section id="visor" className="relative scroll-mt-20 rounded-2xl overflow-hidden border bg-surface-raised card-shadow">
+
 
           <div className="h-[380px] md:h-[480px]">
             <MapContainer
@@ -267,7 +302,7 @@ const Index = () => {
           </div>
 
           {/* Menú flotante glassmorphism */}
-          <div className="absolute top-4 right-4 z-[1000] w-64 rounded-2xl glass p-4">
+          <div className="absolute top-4 right-4 z-[1000] w-56 md:w-64 max-h-[calc(100%-2rem)] overflow-y-auto rounded-2xl glass p-4">
             <div className="flex items-center gap-2 mb-3">
               <Layers className="h-4 w-4 text-jungle" />
               <span className="text-sm font-semibold">Capas cartográficas</span>
@@ -297,9 +332,13 @@ const Index = () => {
             </div>
           </div>
         </section>
+        </div>
 
+        {/* ===== Bloque 2 · Datos oficiales ===== */}
+        <div className="border-t bg-surface-raised px-4 py-10 md:px-8 md:py-14">
         {/* Definición oficial del SNAP */}
-        <section className="rounded-2xl border bg-surface-raised p-6 md:p-8 card-shadow">
+        <section className="rounded-2xl border bg-surface p-6 md:p-8 card-shadow">
+
           <div className="flex items-center gap-2 mb-3">
             <Info className="h-5 w-5 text-ocean" />
             <h2 className="text-base md:text-lg font-bold">
@@ -312,13 +351,13 @@ const Index = () => {
         </section>
 
         {/* KPIs */}
-        <section className="grid gap-4 md:grid-cols-3">
+        <section className="mt-4 grid gap-4 md:grid-cols-3">
           {kpis.map((k) => {
             const t = tonoClases[k.tono];
             return (
               <article
                 key={k.label}
-                className="rounded-2xl border bg-surface-raised p-6 card-shadow transition-shadow duration-300 hover:card-shadow-hover"
+                className="rounded-2xl border bg-surface p-6 card-shadow transition-shadow duration-300 hover:card-shadow-hover"
               >
                 <div className={`h-11 w-11 rounded-xl grid place-items-center ${t.chip}`}>
                   <k.icon className="h-5 w-5" />
@@ -333,19 +372,37 @@ const Index = () => {
           })}
         </section>
 
-        {/* Fundamentación teórica */}
-        <FundamentacionTeorica />
+        </div>
 
-        {/* Guías didácticas SIG */}
-        <GuiasSIG onActivarCapas={activarCapas} />
-
-
-        {/* Misiones */}
-        <section>
-          <div className="flex items-center gap-2 mb-4">
-            <TreePine className="h-5 w-5 text-jungle" />
-            <h2 className="text-lg font-bold">Retos constructivistas</h2>
+        {/* ===== Bloque 3 · Fundamentación teórica ===== */}
+        <div className="border-t bg-surface px-4 py-10 md:px-8 md:py-14">
+          <div className="mb-4">
+            <span className="text-xs font-semibold uppercase tracking-widest text-jungle">Bloque 02</span>
           </div>
+
+          <FundamentacionTeorica />
+        </div>
+
+        {/* ===== Bloque 4 · Guías didácticas ===== */}
+        <div className="border-t bg-surface-raised px-4 py-10 md:px-8 md:py-14">
+          <div className="mb-4">
+            <span className="text-xs font-semibold uppercase tracking-widest text-ocean">Bloque 03</span>
+          </div>
+          <GuiasSIG onActivarCapas={activarCapas} />
+        </div>
+
+        {/* ===== Bloque 5 · Misiones ===== */}
+        <div className="border-t bg-surface px-4 py-10 md:px-8 md:py-14">
+        <section>
+
+          <div className="mb-4">
+            <span className="text-xs font-semibold uppercase tracking-widest text-paramo">Bloque 04</span>
+            <div className="flex items-center gap-2">
+              <TreePine className="h-5 w-5 text-jungle" />
+              <h2 className="text-lg md:text-xl font-bold">Retos constructivistas</h2>
+            </div>
+          </div>
+
           <div className="grid gap-4 md:grid-cols-3">
             {misiones.map((m) => {
               const t = tonoClases[m.tono];
@@ -389,9 +446,16 @@ const Index = () => {
             })}
           </div>
         </section>
+        </div>
 
-        {/* Paneles de datos */}
+        {/* ===== Bloque 6 · Paneles de datos ===== */}
+        <div className="border-t bg-surface-raised px-4 py-10 md:px-8 md:py-14">
+        <div className="mb-6">
+          <span className="text-xs font-semibold uppercase tracking-widest text-ocean">Bloque 05</span>
+          <h2 className="text-lg md:text-xl font-bold">Paneles de datos del SNAP</h2>
+        </div>
         <section className="grid gap-4 lg:grid-cols-2">
+
           {/* Distribución de superficie */}
           <div className="rounded-2xl border bg-surface-raised p-6 card-shadow transition-shadow duration-300 hover:card-shadow-hover">
             <div className="flex items-center gap-2 mb-1">
@@ -490,7 +554,9 @@ const Index = () => {
             </ResponsiveContainer>
           </div>
         </section>
+        </div>
       </div>
+
     </div>
   );
 };
