@@ -37,12 +37,12 @@
     --radius: 0.75rem;
 
     /* Paleta megadiversa Ecuador */
-    --jungle: 160 84% 39%;            /* Verde Selva Intenso #10B981 */
+    --jungle: 143 72% 29%;            /* Verde Selva #15803d */
     --jungle-foreground: 0 0% 100%;
-    --ocean: 217 91% 60%;             /* Azul Galápagos #3B82F6 */
+    --ocean: 201 96% 32%;             /* Azul Océano #0369a1 */
     --ocean-foreground: 0 0% 100%;
-    --paramo: 38 92% 50%;             /* Amarillo Páramo #F59E0B */
-    --paramo-foreground: 30 60% 12%;
+    --paramo: 28 91% 37%;              /* Amarillo/Naranja Páramo #b45309 */
+    --paramo-foreground: 0 0% 100%;
 
     --surface: 210 33% 98%;           /* #F7FAFC */
     --surface-raised: 0 0% 100%;
