@@ -7,7 +7,6 @@ import {
   Leaf,
   ShieldCheck,
 } from "lucide-react";
-import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -70,7 +69,6 @@ const TopicGrid = ({ topics, accent }: TopicGridProps) => (
 );
 
 const Index = () => {
-  const [collapsed, setCollapsed] = useState(false);
   const [completedGuides, setCompletedGuides] = useState<number[]>([]);
 
   const toggleGuide = (guideIndex: number) => {
@@ -82,10 +80,8 @@ const Index = () => {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] bg-background">
-      <DashboardSidebar collapsed={collapsed} onToggle={() => setCollapsed((value) => !value)} />
-
-      <main className="min-w-0 flex-1">
+    <div className="min-h-[calc(100vh-4rem)] bg-background">
+      <main>
         <header className="border-b bg-card px-5 py-10 sm:px-8 md:px-12 md:py-14">
           <div className="mx-auto max-w-6xl">
             <div className="flex items-center gap-4">
