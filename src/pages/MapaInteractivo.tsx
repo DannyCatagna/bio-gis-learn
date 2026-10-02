@@ -32,7 +32,9 @@ type Category =
   | "Áreas Nacionales de Recreación"
   | "Reservas de Producción de Fauna"
   | "Reservas Marinas"
-  | "Áreas Ecológicas de Conservación";
+  | "Áreas Ecológicas de Conservación"
+  | "Áreas Protegidas Privadas"
+  | "Áreas Protegidas Comunitarias";
 
 interface ProtectedArea {
   id: string;
@@ -44,7 +46,7 @@ interface ProtectedArea {
   status: string;
 }
 
-const areas: ProtectedArea[] = [
+const baseAreas: ProtectedArea[] = [
   // ========== PARQUES NACIONALES ==========
   {
     id: "yasuni",
@@ -522,6 +524,63 @@ const areas: ProtectedArea[] = [
   },
 ];
 
+
+const mk = (
+  name: string,
+  category: Category,
+  position: [number, number],
+  description: string,
+  status = "Área del SNAP",
+): ProtectedArea => ({
+  id: name.toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "-"),
+  name,
+  category,
+  position,
+  zoom: 12,
+  description,
+  status,
+});
+
+const extraAreas: ProtectedArea[] = [
+  mk("R.E. Cofán Bermejo", "Reservas Ecológicas", [0.33, -77.3], "Bosque amazónico de piedemonte en territorio de la nacionalidad A'i Cofán (Sucumbíos)."),
+  mk("R.B. El Quimi", "Reservas Biológicas", [-3.52, -78.38], "Mesetas de arenisca de la Cordillera del Cóndor con flora endémica."),
+  mk("R.M. Hermandad", "Reservas Marinas", [-1.2, -88.5], "Corredor marino entre Galápagos y el Pacífico oriental tropical para especies migratorias."),
+  mk("R.M. El Pelado", "Reservas Marinas", [-1.93, -80.79], "Islote y arrecifes rocosos frente a Ayangue, Santa Elena."),
+  mk("R.M. Bajo Copé", "Reservas Marinas", [-2.0, -81.05], "Bajo submarino de alta productividad pesquera frente a Santa Elena."),
+  mk("R.V.S. Isla Santa Clara", "Refugios de Vida Silvestre", [-3.17, -80.43], "Isla del Golfo de Guayaquil, colonia de piqueros y fragatas."),
+  mk("R.V.S. Manglares Estuario Río Esmeraldas", "Refugios de Vida Silvestre", [0.95, -79.65], "Manglar urbano-estuarino de la ciudad de Esmeraldas."),
+  mk("A.E.C.M. Tinajillas-Río Gualaceño", "Áreas Ecológicas de Conservación", [-3.2, -78.65], "Páramo y bosque montano del cantón Limón Indanza."),
+  mk("A.E.C.M. Paltas", "Áreas Ecológicas de Conservación", [-4.05, -79.65], "Bosque seco y montano del cantón Paltas, Loja."),
+  mk("A.E.C.M. Yacuambi", "Áreas Ecológicas de Conservación", [-3.6, -78.92], "Bosque montano de Zamora Chinchipe, recarga hídrica comunitaria."),
+  mk("A.E.C.M. Huashapamba", "Áreas Ecológicas de Conservación", [-3.68, -79.28], "Bosque nublado de Saraguro, gestionado con el pueblo kichwa Saraguro."),
+  mk("A.E.C.M. Celica", "Áreas Ecológicas de Conservación", [-4.1, -79.95], "Bosque andino del occidente lojano."),
+  mk("A.E.C.M. Pindal", "Áreas Ecológicas de Conservación", [-4.12, -80.1], "Remanentes de bosque seco tumbesino."),
+  mk("A.E.C.M. Zapotillo", "Áreas Ecológicas de Conservación", [-4.38, -80.24], "Bosque seco de ceibos, Reserva de Biósfera del Bosque Seco."),
+  mk("A.E.C.M. Puyango", "Áreas Ecológicas de Conservación", [-3.88, -80.08], "Bosque petrificado con troncos fósiles y bosque seco."),
+  mk("A.E.C.M. Mazán", "Áreas Ecológicas de Conservación", [-2.87, -79.12], "Bosque andino que protege fuentes de agua de Cuenca."),
+  mk("A.E.C.M. Cerro de Hayas", "Áreas Ecológicas de Conservación", [-2.73, -79.62], "Bosque húmedo de estribación occidental en Naranjal."),
+  mk("A.E.C.M. La Bonita", "Áreas Ecológicas de Conservación", [0.48, -77.55], "Bosque montano del cantón Sucumbíos, corredor andino-amazónico."),
+  mk("A.P.P. Jama-Coaque", "Áreas Protegidas Privadas", [-0.12, -80.11], "Bosque húmedo tropical costero de Manabí.", "Subsistema privado"),
+  mk("A.P.P. Bosque Seco Lalo Loor", "Áreas Protegidas Privadas", [-0.08, -80.15], "Transición bosque seco-húmedo en Jama.", "Subsistema privado"),
+  mk("A.P.P. Ayampe", "Áreas Protegidas Privadas", [-1.67, -80.79], "Bosque de garúa, hábitat del colibrí estrellita esmeraldeña.", "Subsistema privado"),
+  mk("A.P.P. Cerro Blanco", "Áreas Protegidas Privadas", [-2.18, -80.02], "Bosque seco tropical junto a Guayaquil, refugio del papagayo de Guayaquil.", "Subsistema privado"),
+  mk("A.P.P. Maquipucuna", "Áreas Protegidas Privadas", [0.12, -78.63], "Bosque nublado del Chocó Andino, avistamiento del oso andino.", "Subsistema privado"),
+  mk("A.P.P. Yanacocha", "Áreas Protegidas Privadas", [-0.11, -78.58], "Bosque altoandino del Pichincha, hogar del zamarrito pechinegro.", "Subsistema privado"),
+  mk("A.P.P. Tapichalaca", "Áreas Protegidas Privadas", [-4.49, -79.13], "Bosque nublado donde se descubrió el gralaria jocotoco.", "Subsistema privado"),
+  mk("A.P.P. Buenaventura", "Áreas Protegidas Privadas", [-3.65, -79.77], "Bosque nublado de El Oro, hábitat del perico de El Oro.", "Subsistema privado"),
+  mk("A.P.P. Copalinga", "Áreas Protegidas Privadas", [-4.09, -78.96], "Bosque premontano junto al P.N. Podocarpus.", "Subsistema privado"),
+  mk("A.P.P. Mashpi", "Áreas Protegidas Privadas", [0.16, -78.87], "Bosque nublado del Chocó Andino con alta endemicidad.", "Subsistema privado"),
+  mk("A.P.P. Río Canandé", "Áreas Protegidas Privadas", [0.52, -79.13], "Bosque húmedo del Chocó en Esmeraldas.", "Subsistema privado"),
+  mk("A.P.P. Río Silanche", "Áreas Protegidas Privadas", [0.13, -79.14], "Remanente de bosque piemontano del Chocó.", "Subsistema privado"),
+  mk("A.P.P. Las Gralarias", "Áreas Protegidas Privadas", [-0.01, -78.73], "Bosque nublado de Mindo con anfibios amenazados.", "Subsistema privado"),
+  mk("A.P.P. Narupa", "Áreas Protegidas Privadas", [-0.7, -77.75], "Bosque de estribación amazónica en Napo.", "Subsistema privado"),
+  mk("A.P.C. Tambillo", "Áreas Protegidas Comunitarias", [-0.43, -78.55], "Bosque andino gestionado por la comunidad.", "Subsistema comunitario"),
+  mk("A.P.C. Cuenca Alta del Río Oyacachi", "Áreas Protegidas Comunitarias", [-0.21, -78.06], "Páramo y bosque andino de la comunidad kichwa de Oyacachi.", "Subsistema comunitario"),
+  mk("A.P.C. Kawsak Sacha (Sarayaku)", "Áreas Protegidas Comunitarias", [-1.73, -77.48], "Selva Viviente del pueblo kichwa de Sarayaku, Pastaza.", "Subsistema comunitario"),
+];
+
+const areas: ProtectedArea[] = [...baseAreas, ...extraAreas];
+
 const categories: Category[] = [
   "Parques Nacionales",
   "Reservas Ecológicas",
@@ -531,6 +590,8 @@ const categories: Category[] = [
   "Reservas de Producción de Fauna",
   "Reservas Marinas",
   "Áreas Ecológicas de Conservación",
+  "Áreas Protegidas Privadas",
+  "Áreas Protegidas Comunitarias",
 ];
 
 const FlyToHandler = ({ target }: { target: ProtectedArea | null }) => {
@@ -556,7 +617,7 @@ const MapaInteractivo = () => {
     <div className="container py-10">
       <div className="mb-8 text-center max-w-2xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold text-primary mb-3">
-          Mapa Interactivo — SNAP Ecuador
+          Mapa Interactivo — {areas.length} Áreas Protegidas del Ecuador
         </h1>
         <p className="text-muted-foreground">
           Explora el Sistema Nacional de Áreas Protegidas del Ecuador, agrupado por categoría
