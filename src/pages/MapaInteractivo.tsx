@@ -69,16 +69,6 @@ const baseAreas: ProtectedArea[] = [
     status: "Área protegida del SNAP — Sierra",
   },
   {
-    id: "galapagos",
-    name: "P.N. Galápagos",
-    category: "Parques Nacionales",
-    position: [-0.7893, -90.9648],
-    zoom: 7,
-    description:
-      "Archipiélago volcánico con especies endémicas únicas que inspiraron la teoría de la evolución de Darwin.",
-    status: "Patrimonio Natural de la Humanidad",
-  },
-  {
     id: "cajas",
     name: "P.N. Cajas",
     category: "Parques Nacionales",
@@ -481,16 +471,6 @@ const baseAreas: ProtectedArea[] = [
 
   // ========== RESERVAS MARINAS ==========
   {
-    id: "rm-galapagos",
-    name: "R.M. Galápagos",
-    category: "Reservas Marinas",
-    position: [-0.5, -91.0],
-    zoom: 6,
-    description:
-      "Una de las reservas marinas más grandes del mundo. Tiburones martillo, mantas y leones marinos.",
-    status: "Patrimonio Natural UNESCO",
-  },
-  {
     id: "rm-galera-san-francisco",
     name: "R.M. Galera-San Francisco",
     category: "Reservas Marinas",
@@ -544,7 +524,6 @@ const mk = (
 const extraAreas: ProtectedArea[] = [
   mk("R.E. Cofán Bermejo", "Reservas Ecológicas", [0.33, -77.3], "Bosque amazónico de piedemonte en territorio de la nacionalidad A'i Cofán (Sucumbíos)."),
   mk("R.B. El Quimi", "Reservas Biológicas", [-3.52, -78.38], "Mesetas de arenisca de la Cordillera del Cóndor con flora endémica."),
-  mk("R.M. Hermandad", "Reservas Marinas", [-1.2, -88.5], "Corredor marino entre Galápagos y el Pacífico oriental tropical para especies migratorias."),
   mk("R.M. El Pelado", "Reservas Marinas", [-1.93, -80.79], "Islote y arrecifes rocosos frente a Ayangue, Santa Elena."),
   mk("R.M. Bajo Copé", "Reservas Marinas", [-2.0, -81.05], "Bajo submarino de alta productividad pesquera frente a Santa Elena."),
   mk("R.V.S. Isla Santa Clara", "Refugios de Vida Silvestre", [-3.17, -80.43], "Isla del Golfo de Guayaquil, colonia de piqueros y fragatas."),
@@ -617,10 +596,10 @@ const MapaInteractivo = () => {
     <div className="container py-10">
       <div className="mb-8 text-center max-w-2xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold text-primary mb-3">
-          Mapa Interactivo — {areas.length} Áreas Protegidas del Ecuador
+          Mapa Interactivo — {areas.length} Áreas Protegidas del Ecuador Continental
         </h1>
         <p className="text-muted-foreground">
-          Explora el Sistema Nacional de Áreas Protegidas del Ecuador, agrupado por categoría
+          Explora las áreas protegidas del Ecuador continental, agrupadas por categoría
           de manejo. Despliega una sección y selecciona un área para ubicarla en el mapa.
         </p>
       </div>
@@ -678,8 +657,14 @@ const MapaInteractivo = () => {
         {/* Map */}
         <div className="rounded-xl overflow-hidden border card-shadow h-[600px]">
           <MapContainer
-            center={[-1.8312, -78.1834]}
+            center={[-1.5, -78.4]}
             zoom={6}
+            minZoom={6}
+            maxBounds={[
+              [-6.8, -82.2],
+              [2.8, -74.2],
+            ]}
+            maxBoundsViscosity={0.9}
             scrollWheelZoom={true}
             style={{ height: "100%", width: "100%" }}
           >
