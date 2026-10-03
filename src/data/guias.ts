@@ -48,8 +48,7 @@ export const guias: Guia[] = [
       "¿Qué factores ambientales determinan principalmente la distribución de la especie analizada?",
       "¿Cómo se relaciona el rango de distribución observado con las regiones biogeográficas del Ecuador?",
       "¿Qué implicaciones tendría una variación climática sobre el nicho potencial de esta especie endémica?",
-etiquetaExtra: "",
-    ].filter(Boolean) as string[],
+    ],
     recursos: [
       "GBIF (gbif.org) — registros de presencia globales georreferenciados.",
       "BIOWEB (bioweb.bio) — portal de biodiversidad del Ecuador.",
