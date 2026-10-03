@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, BookOpen, CheckCircle2, Lightbulb, FileText, Brain, Send, Target } from "lucide-react";
+import { ArrowLeft, BookOpen, CheckCircle2, Lightbulb, FileText, Brain, Send, Target, GraduationCap, PackageCheck, ListChecks, BookMarked } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
@@ -129,12 +129,68 @@ const GuiaDetalle = () => {
               </div>
             </AccordionTrigger>
             <AccordionContent className="pb-6">
-              <p className="text-sm md:text-base text-muted-foreground leading-[1.8] pl-8">
+              <p className="text-sm md:text-base text-muted-foreground leading-[1.8] pl-8 whitespace-pre-line">
                 {guia.fundamento}
               </p>
             </AccordionContent>
           </AccordionItem>
         </Accordion>
+      </section>
+
+      {/* Recursos y Fuentes */}
+      <section className="mb-8">
+        <div className="flex items-center gap-3 mb-4 px-1">
+          <BookMarked className="h-5 w-5 text-primary" />
+          <h2 className="text-lg font-semibold">Recursos y Fuentes</h2>
+        </div>
+        <ul className="bg-card border rounded-2xl p-5 card-shadow space-y-3">
+          {guia.recursos.map((r) => (
+            <li key={r} className="flex items-start gap-3 text-sm leading-relaxed">
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+              {r}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* Glosario Técnico */}
+      <section className="mb-8">
+        <Accordion type="single" collapsible className="bg-card border rounded-2xl px-6 card-shadow">
+          <AccordionItem value="glosario" className="border-b-0">
+            <AccordionTrigger className="hover:no-underline py-5">
+              <div className="flex items-center gap-3">
+                <GraduationCap className="h-5 w-5 text-primary" />
+                <span className="text-base font-semibold">Glosario Técnico</span>
+                <span className="text-xs text-muted-foreground font-normal">
+                  ({guia.glosario.length} términos)
+                </span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="pb-6">
+              <dl className="space-y-4 pl-8">
+                {guia.glosario.map((g) => (
+                  <div key={g.termino}>
+                    <dt className="text-sm font-semibold text-foreground">{g.termino}</dt>
+                    <dd className="text-sm text-muted-foreground leading-relaxed mt-0.5">
+                      {g.definicion}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </section>
+
+      {/* Producto Esperado */}
+      <section className="mb-8">
+        <div className="flex items-start gap-3 rounded-2xl border border-primary/30 bg-secondary/20 p-5">
+          <PackageCheck className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+          <div>
+            <h2 className="text-sm font-semibold text-primary mb-1">Producto Esperado</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">{guia.productoEsperado}</p>
+          </div>
+        </div>
       </section>
 
       {/* Checklist Procedimental */}
@@ -233,6 +289,22 @@ const GuiaDetalle = () => {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* Criterios de Evaluación */}
+      <section className="mb-8">
+        <div className="flex items-center gap-3 mb-4 px-1">
+          <ListChecks className="h-5 w-5 text-primary" />
+          <h2 className="text-lg font-semibold">Criterios de Evaluación</h2>
+        </div>
+        <ul className="bg-card border rounded-2xl p-5 card-shadow space-y-3">
+          {guia.criterios.map((c) => (
+            <li key={c} className="flex items-start gap-3 text-sm leading-relaxed">
+              <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+              {c}
+            </li>
+          ))}
+        </ul>
       </section>
 
       {/* Submit */}
