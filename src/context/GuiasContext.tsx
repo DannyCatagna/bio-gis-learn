@@ -35,13 +35,10 @@ export const GuiasProvider = ({ children }: { children: ReactNode }) => {
 
   const getState = (id: string, stepsCount: number, preguntasCount: number): GuiaState => {
     const existing = data[id];
-    if (existing && existing.steps.length === stepsCount && existing.preguntas.length === preguntasCount) {
-      return existing;
-    }
     return {
-      steps: existing?.steps?.length === stepsCount ? existing.steps : Array(stepsCount).fill(false),
-      evidencia: existing?.evidencia ?? "",
-      preguntas: existing?.preguntas?.length === preguntasCount ? existing.preguntas : Array(preguntasCount).fill(""),
+      steps: Array.isArray(existing?.steps) && existing.steps.length === stepsCount ? existing.steps : Array(stepsCount).fill(false),
+      evidencia: typeof existing?.evidencia === "string" ? existing.evidencia : "",
+      preguntas: Array.isArray(existing?.preguntas) && existing.preguntas.length === preguntasCount ? existing.preguntas : Array(preguntasCount).fill(""),
     };
   };
 
