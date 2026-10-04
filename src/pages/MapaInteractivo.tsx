@@ -5,12 +5,6 @@ import "leaflet/dist/leaflet.css";
 import { MapPin, Leaf, Image as ImageIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from "@/components/ui/accordion";
 
 // Fix default marker icons (Leaflet + bundlers)
 const DefaultIcon = L.icon({
