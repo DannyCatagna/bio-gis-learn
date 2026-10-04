@@ -711,8 +711,9 @@ const MapaInteractivo = () => {
               </Marker>
             ))}
           </MapContainer>
-        </div>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Selected detail card (mobile-friendly) */}
       {selected && (
