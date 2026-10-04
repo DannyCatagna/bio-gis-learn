@@ -5,12 +5,6 @@ import "leaflet/dist/leaflet.css";
 import { MapPin, Leaf, Image as ImageIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from "@/components/ui/accordion";
 
 // Fix default marker icons (Leaflet + bundlers)
 const DefaultIcon = L.icon({
@@ -583,6 +577,7 @@ const FlyToHandler = ({ target }: { target: ProtectedArea | null }) => {
 
 const MapaInteractivo = () => {
   const [selected, setSelected] = useState<ProtectedArea | null>(null);
+  const [activeCategory, setActiveCategory] = useState<Category>("Parques Nacionales");
   const markerRefs = useRef<Record<string, L.Marker | null>>({});
 
   const handleSelect = (area: ProtectedArea) => {
@@ -592,6 +587,8 @@ const MapaInteractivo = () => {
     }, 1600);
   };
 
+  const visibleAreas = areas.filter((a) => a.category === activeCategory);
+
   return (
     <div className="container py-10">
       <div className="mb-8 text-center max-w-2xl mx-auto">
@@ -599,63 +596,71 @@ const MapaInteractivo = () => {
           Mapa Interactivo — {areas.length} Áreas Protegidas del Ecuador Continental
         </h1>
         <p className="text-muted-foreground">
-          Explora las áreas protegidas del Ecuador continental, agrupadas por categoría
-          de manejo. Despliega una sección y selecciona un área para ubicarla en el mapa.
+          Explora las áreas protegidas del Ecuador continental. Elige una categoría y
+          selecciona un área para ubicarla en el mapa.
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-[320px_1fr] gap-6">
-        {/* Sidebar */}
-        <aside className="lg:sticky lg:top-20 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Leaf className="h-5 w-5 text-primary" />
-                Áreas Protegidas
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <Accordion type="multiple" defaultValue={["Parques Nacionales"]} className="w-full">
-                {categories.map((cat) => {
-                  const items = areas.filter((a) => a.category === cat);
-                  if (items.length === 0) return null;
-                  return (
-                    <AccordionItem key={cat} value={cat}>
-                      <AccordionTrigger className="text-sm font-semibold text-primary hover:no-underline">
-                        {cat}
-                        <span className="ml-2 text-xs text-muted-foreground font-normal">
-                          ({items.length})
-                        </span>
-                      </AccordionTrigger>
-                      <AccordionContent className="space-y-1">
-                        {items.map((a) => {
-                          const active = selected?.id === a.id;
-                          return (
-                            <button
-                              key={a.id}
-                              onClick={() => handleSelect(a)}
-                              className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors flex items-start gap-2 ${
-                                active
-                                  ? "bg-primary text-primary-foreground"
-                                  : "hover:bg-muted text-foreground"
-                              }`}
-                            >
-                              <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
-                              <span className="font-medium leading-snug">{a.name}</span>
-                            </button>
-                          );
-                        })}
-                      </AccordionContent>
-                    </AccordionItem>
-                  );
-                })}
-              </Accordion>
-            </CardContent>
-          </Card>
-        </aside>
+      {/* Unified card: menu + map together */}
+      <Card className="card-shadow">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Leaf className="h-5 w-5 text-primary" />
+            Áreas Protegidas por Categoría
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-5">
+          {/* Horizontal category rectangles */}
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {categories.map((cat) => {
+              const count = areas.filter((a) => a.category === cat).length;
+              const active = activeCategory === cat;
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`shrink-0 rounded-lg border px-4 py-2.5 text-sm font-semibold transition-colors ${
+                    active
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-card text-foreground border-border hover:bg-muted"
+                  }`}
+                >
+                  {cat}
+                  <span
+                    className={`ml-2 text-xs font-normal ${
+                      active ? "text-primary-foreground/80" : "text-muted-foreground"
+                    }`}
+                  >
+                    ({count})
+                  </span>
+                </button>
+              );
+            })}
+          </div>
 
-        {/* Map */}
-        <div className="rounded-xl overflow-hidden border card-shadow h-[600px]">
+          {/* Horizontal area rectangles */}
+          <div className="flex gap-3 overflow-x-auto pb-2">
+            {visibleAreas.map((a) => {
+              const active = selected?.id === a.id;
+              return (
+                <button
+                  key={a.id}
+                  onClick={() => handleSelect(a)}
+                  className={`shrink-0 w-56 text-left rounded-lg border p-3 transition-colors flex items-start gap-2 ${
+                    active
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-card border-border hover:bg-muted text-foreground"
+                  }`}
+                >
+                  <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
+                  <span className="font-medium text-sm leading-snug">{a.name}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Map */}
+          <div className="rounded-xl overflow-hidden border h-[600px]">
           <MapContainer
             center={[-1.5, -78.4]}
             zoom={6}
@@ -706,8 +711,9 @@ const MapaInteractivo = () => {
               </Marker>
             ))}
           </MapContainer>
-        </div>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Selected detail card (mobile-friendly) */}
       {selected && (
