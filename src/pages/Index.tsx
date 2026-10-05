@@ -8,6 +8,9 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
+import fondoEcuador from "@/assets/fondo-ecuador.jpg";
+import unidadDosImg from "@/assets/unidad-2-ecuador.jpg";
+import unidadTresImg from "@/assets/unidad-3-ecuador.jpg";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -255,10 +258,19 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-background">
+    <div className="min-h-[calc(100vh-4rem)]">
       <main>
-        <header className="border-b bg-card px-5 py-10 sm:px-8 md:px-12 md:py-14">
-          <div className="mx-auto max-w-6xl">
+        <header className="relative overflow-hidden border-b bg-card px-5 py-10 sm:px-8 md:px-12 md:py-14">
+          <img
+            src={fondoEcuador}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            width={1920}
+            height={1088}
+            className="absolute inset-0 h-full w-full object-cover opacity-30"
+          />
+          <div className="relative mx-auto max-w-6xl">
             <div className="flex items-center gap-4">
               <div className="grid h-12 w-12 shrink-0 place-items-center rounded-md bg-jungle text-jungle-foreground">
                 <Leaf className="h-6 w-6" aria-hidden="true" />
@@ -298,14 +310,32 @@ const Index = () => {
             </TabsList>
           </div>
 
-          <TabsContent value="unidad-2" className="m-0 bg-background focus-visible:ring-jungle">
+          <TabsContent value="unidad-2" className="m-0 focus-visible:ring-jungle">
             <section className="px-5 py-14 sm:px-8 md:px-12 md:py-20" aria-labelledby="unidad-dos-title">
               <div className="mx-auto max-w-6xl">
-                <div className="mb-10 max-w-4xl border-l-4 border-jungle pl-5 md:mb-14 md:pl-7">
-                  <p className="text-sm font-semibold uppercase text-jungle">Unidad 2</p>
-                  <h2 id="unidad-dos-title" className="mt-2 text-3xl font-bold leading-tight md:text-4xl">
-                    Ecuador, País Megadiverso
-                  </h2>
+                <div className="relative mb-10 overflow-hidden rounded-xl shadow-md md:mb-14">
+                  <img
+                    src={unidadDosImg}
+                    alt="Flora y fauna representativa del Ecuador megadiverso: gallito de la roca, colibrí, oso de anteojos y volcanes andinos"
+                    loading="lazy"
+                    width={1920}
+                    height={560}
+                    className="h-56 w-full object-cover md:h-72"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-jungle/90 via-jungle/60 to-transparent" />
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="px-7 md:px-12">
+                      <p className="text-sm font-semibold uppercase tracking-wide text-card/90">
+                        Unidad 2
+                      </p>
+                      <h2
+                        id="unidad-dos-title"
+                        className="mt-2 max-w-xl text-3xl font-bold leading-tight text-card drop-shadow-sm md:text-4xl"
+                      >
+                        Ecuador, País Megadiverso
+                      </h2>
+                    </div>
+                  </div>
                 </div>
                 <TopicGrid topics={temasUnidadDos} accent="jungle" />
               </div>
@@ -315,18 +345,36 @@ const Index = () => {
           <TabsContent value="unidad-3" className="m-0 bg-muted/60 focus-visible:ring-ocean">
             <section className="px-5 py-14 sm:px-8 md:px-12 md:py-20" aria-labelledby="unidad-tres-title">
               <div className="mx-auto max-w-6xl">
-                <div className="mb-10 max-w-4xl border-l-4 border-ocean pl-5 md:mb-14 md:pl-7">
-                  <p className="text-sm font-semibold uppercase text-ocean">Unidad 3</p>
-                  <h2 id="unidad-tres-title" className="mt-2 text-3xl font-bold leading-tight md:text-4xl">
-                    Conservación de la Biodiversidad en el Ecuador
-                  </h2>
+                <div className="relative mb-10 overflow-hidden rounded-xl shadow-md md:mb-14">
+                  <img
+                    src={unidadTresImg}
+                    alt="Guardaparques y comunidades ecuatorianas sembrando especies nativas, con el cóndor andino volando sobre el paisaje"
+                    loading="lazy"
+                    width={1920}
+                    height={560}
+                    className="h-56 w-full object-cover md:h-72"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-ocean/90 via-ocean/60 to-transparent" />
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="px-7 md:px-12">
+                      <p className="text-sm font-semibold uppercase tracking-wide text-card/90">
+                        Unidad 3
+                      </p>
+                      <h2
+                        id="unidad-tres-title"
+                        className="mt-2 max-w-xl text-3xl font-bold leading-tight text-card drop-shadow-sm md:text-4xl"
+                      >
+                        Conservación de la Biodiversidad en el Ecuador
+                      </h2>
+                    </div>
+                  </div>
                 </div>
                 <TopicGrid topics={temasUnidadTres} accent="ocean" />
               </div>
             </section>
           </TabsContent>
 
-          <TabsContent value="guias" className="m-0 bg-background focus-visible:ring-paramo">
+          <TabsContent value="guias" className="m-0 focus-visible:ring-paramo">
             <section className="px-5 py-14 sm:px-8 md:px-12 md:py-20" aria-labelledby="guias-title">
               <div className="mx-auto max-w-6xl">
                 <div className="mb-10 flex flex-col gap-5 border-l-4 border-paramo pl-5 sm:flex-row sm:items-end sm:justify-between md:mb-14 md:pl-7">
