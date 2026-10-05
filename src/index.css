@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 30 48% 65%;   /* #d1a77d */
+    --background: 29 49% 81%;   /* #e6cdb5 */
     --foreground: 153 45% 18%;
 
     --card: 0 0% 100%;
@@ -16,11 +16,11 @@
     --primary: 153 43% 29%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 152 49% 71%;
+    --secondary: 30 52% 77%;          /* #e3c4a6 */
     --secondary-foreground: 153 45% 18%;
 
-    --muted: 150 20% 93%;
-    --muted-foreground: 153 20% 40%;
+    --muted: 30 52% 77%;              /* #e3c4a6 — fondos secundarios */
+    --muted-foreground: 153 25% 32%;
 
     --accent: 152 49% 71%;
     --accent-foreground: 153 45% 18%;
