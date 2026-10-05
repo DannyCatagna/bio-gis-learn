@@ -313,11 +313,29 @@ const Index = () => {
           <TabsContent value="unidad-2" className="m-0 bg-background focus-visible:ring-jungle">
             <section className="px-5 py-14 sm:px-8 md:px-12 md:py-20" aria-labelledby="unidad-dos-title">
               <div className="mx-auto max-w-6xl">
-                <div className="mb-10 max-w-4xl border-l-4 border-jungle pl-5 md:mb-14 md:pl-7">
-                  <p className="text-sm font-semibold uppercase text-jungle">Unidad 2</p>
-                  <h2 id="unidad-dos-title" className="mt-2 text-3xl font-bold leading-tight md:text-4xl">
-                    Ecuador, País Megadiverso
-                  </h2>
+                <div className="relative mb-10 overflow-hidden rounded-xl shadow-md md:mb-14">
+                  <img
+                    src={unidadDosImg}
+                    alt="Flora y fauna representativa del Ecuador megadiverso: gallito de la roca, colibrí, oso de anteojos y volcanes andinos"
+                    loading="lazy"
+                    width={1920}
+                    height={560}
+                    className="h-56 w-full object-cover md:h-72"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-jungle/90 via-jungle/60 to-transparent" />
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="px-7 md:px-12">
+                      <p className="text-sm font-semibold uppercase tracking-wide text-card/90">
+                        Unidad 2
+                      </p>
+                      <h2
+                        id="unidad-dos-title"
+                        className="mt-2 max-w-xl text-3xl font-bold leading-tight text-card drop-shadow-sm md:text-4xl"
+                      >
+                        Ecuador, País Megadiverso
+                      </h2>
+                    </div>
+                  </div>
                 </div>
                 <TopicGrid topics={temasUnidadDos} accent="jungle" />
               </div>
@@ -327,11 +345,29 @@ const Index = () => {
           <TabsContent value="unidad-3" className="m-0 bg-muted/60 focus-visible:ring-ocean">
             <section className="px-5 py-14 sm:px-8 md:px-12 md:py-20" aria-labelledby="unidad-tres-title">
               <div className="mx-auto max-w-6xl">
-                <div className="mb-10 max-w-4xl border-l-4 border-ocean pl-5 md:mb-14 md:pl-7">
-                  <p className="text-sm font-semibold uppercase text-ocean">Unidad 3</p>
-                  <h2 id="unidad-tres-title" className="mt-2 text-3xl font-bold leading-tight md:text-4xl">
-                    Conservación de la Biodiversidad en el Ecuador
-                  </h2>
+                <div className="relative mb-10 overflow-hidden rounded-xl shadow-md md:mb-14">
+                  <img
+                    src={unidadTresImg}
+                    alt="Guardaparques y comunidades ecuatorianas sembrando especies nativas, con el cóndor andino volando sobre el paisaje"
+                    loading="lazy"
+                    width={1920}
+                    height={560}
+                    className="h-56 w-full object-cover md:h-72"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-ocean/90 via-ocean/60 to-transparent" />
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="px-7 md:px-12">
+                      <p className="text-sm font-semibold uppercase tracking-wide text-card/90">
+                        Unidad 3
+                      </p>
+                      <h2
+                        id="unidad-tres-title"
+                        className="mt-2 max-w-xl text-3xl font-bold leading-tight text-card drop-shadow-sm md:text-4xl"
+                      >
+                        Conservación de la Biodiversidad en el Ecuador
+                      </h2>
+                    </div>
+                  </div>
                 </div>
                 <TopicGrid topics={temasUnidadTres} accent="ocean" />
               </div>
