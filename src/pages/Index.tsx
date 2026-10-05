@@ -258,7 +258,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-background">
+    <div className="min-h-[calc(100vh-4rem)]">
       <main>
         <header className="relative overflow-hidden border-b bg-card px-5 py-10 sm:px-8 md:px-12 md:py-14">
           <img
@@ -310,7 +310,7 @@ const Index = () => {
             </TabsList>
           </div>
 
-          <TabsContent value="unidad-2" className="m-0 bg-background focus-visible:ring-jungle">
+          <TabsContent value="unidad-2" className="m-0 focus-visible:ring-jungle">
             <section className="px-5 py-14 sm:px-8 md:px-12 md:py-20" aria-labelledby="unidad-dos-title">
               <div className="mx-auto max-w-6xl">
                 <div className="relative mb-10 overflow-hidden rounded-xl shadow-md md:mb-14">
@@ -374,7 +374,7 @@ const Index = () => {
             </section>
           </TabsContent>
 
-          <TabsContent value="guias" className="m-0 bg-background focus-visible:ring-paramo">
+          <TabsContent value="guias" className="m-0 focus-visible:ring-paramo">
             <section className="px-5 py-14 sm:px-8 md:px-12 md:py-20" aria-labelledby="guias-title">
               <div className="mx-auto max-w-6xl">
                 <div className="mb-10 flex flex-col gap-5 border-l-4 border-paramo pl-5 sm:flex-row sm:items-end sm:justify-between md:mb-14 md:pl-7">
