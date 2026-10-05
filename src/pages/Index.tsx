@@ -8,6 +8,9 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
+import fondoEcuador from "@/assets/fondo-ecuador.jpg";
+import unidadDosImg from "@/assets/unidad-2-ecuador.jpg";
+import unidadTresImg from "@/assets/unidad-3-ecuador.jpg";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

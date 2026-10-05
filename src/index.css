@@ -70,6 +70,16 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    /* Fondo alusivo a Ecuador, país megadiverso, sobre el tono arena */
+    background-image:
+      linear-gradient(
+        hsl(var(--background) / 0.86),
+        hsl(var(--background) / 0.86)
+      ),
+      url('./assets/fondo-ecuador.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-semibold tracking-tight text-foreground;
