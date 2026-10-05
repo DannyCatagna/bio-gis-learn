@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,7 +11,6 @@ import Guias from "./pages/Guias";
 import GuiaDetalle from "./pages/GuiaDetalle";
 import Evaluacion from "./pages/Evaluacion";
 import MapaInteractivo from "./pages/MapaInteractivo";
-import AreasProtegidas from "./pages/AreasProtegidas";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,7 +31,7 @@ const App = () => (
                 <Route path="/guias" element={<Guias />} />
                 <Route path="/guias/:id" element={<GuiaDetalle />} />
                 <Route path="/mapa" element={<MapaInteractivo />} />
-                <Route path="/areas-protegidas" element={<><MapaInteractivo /><AreasProtegidas /></>} />
+                <Route path="/areas-protegidas" element={<Navigate to="/mapa" replace />} />
                 <Route path="/evaluacion" element={<Evaluacion />} />
 
                 <Route path="*" element={<NotFound />} />
