@@ -260,8 +260,17 @@ const Index = () => {
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-background">
       <main>
-        <header className="border-b bg-card px-5 py-10 sm:px-8 md:px-12 md:py-14">
-          <div className="mx-auto max-w-6xl">
+        <header className="relative overflow-hidden border-b bg-card px-5 py-10 sm:px-8 md:px-12 md:py-14">
+          <img
+            src={fondoEcuador}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            width={1920}
+            height={1088}
+            className="absolute inset-0 h-full w-full object-cover opacity-30"
+          />
+          <div className="relative mx-auto max-w-6xl">
             <div className="flex items-center gap-4">
               <div className="grid h-12 w-12 shrink-0 place-items-center rounded-md bg-jungle text-jungle-foreground">
                 <Leaf className="h-6 w-6" aria-hidden="true" />
