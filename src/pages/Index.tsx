@@ -11,6 +11,14 @@ import {
 import fondoEcuador from "@/assets/fondo-ecuador.jpg";
 import unidadDosImg from "@/assets/unidad-2-ecuador.jpg";
 import unidadTresImg from "@/assets/unidad-3-ecuador.jpg";
+import tema21Img from "@/assets/tema-21.jpg";
+import tema22Img from "@/assets/tema-22.jpg";
+import tema23Img from "@/assets/tema-23.jpg";
+import tema24Img from "@/assets/tema-24.jpg";
+import tema31Img from "@/assets/tema-31.jpg";
+import tema32Img from "@/assets/tema-32.jpg";
+import tema33Img from "@/assets/tema-33.jpg";
+import tema34Img from "@/assets/tema-34.jpg";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -22,11 +30,13 @@ interface Tema {
   descripcion: string;
   puntos: string[];
   datoClave: string;
+  imagen: string;
 }
 
 const temasUnidadDos: Tema[] = [
   {
     titulo: "Tema 2.1: Diversidad de las Especies",
+    imagen: tema21Img,
     subtitulo: "(Características ambientales y generales del Ecuador)",
     descripcion:
       "El Ecuador figura entre los 17 países megadiversos del planeta: concentra un porcentaje desproporcionado de la biodiversidad mundial en apenas 283.561 km². Esta riqueza responde a su posición equinoccial, a la presencia de la cordillera de los Andes —que divide al país en vertientes con climas radicalmente distintos— y a la influencia simultánea de las corrientes marinas fría de Humboldt y cálida de El Niño sobre la costa pacífica.",
@@ -42,6 +52,7 @@ const temasUnidadDos: Tema[] = [
   },
   {
     titulo: "Tema 2.2: Flora y Fauna del Ecuador",
+    imagen: tema22Img,
     subtitulo: "(Fauna y sus ecosistemas, Áreas protegidas)",
     descripcion:
       "La fauna ecuatoriana incluye alrededor de 1.700 especies de aves, más de 430 mamíferos, 470 anfibios y 380 reptiles, junto con una fauna invertebrada gigantesca (más de 4.500 especies de mariposas). Cada ecosistema mantiene ensamblajes únicos: el oso de anteojos y el cóndor andino habitan los páramos y bosques andinos; el jaguar, el tapir y el guacamayo rojo la Amazonía; las tortugas gigantes y las iguanas marinas son exclusivas de Galápagos; y los manglares sostienen aves acuáticas y crustáceos de enorme valor económico.",
@@ -57,6 +68,7 @@ const temasUnidadDos: Tema[] = [
   },
   {
     titulo: "Tema 2.3: Especies Endémicas",
+    imagen: tema23Img,
     subtitulo: "(Flora ecosistémica y Manejo de cuencas hídricas)",
     descripcion:
       "Una especie endémica existe únicamente en un lugar del planeta. El endemismo ecuatoriano es altísimo gracias al aislamiento histórico de Galápagos, los valles interandinos y la fragmentación natural de los bosques del Chocó. Se estima que alrededor del 15–20 % de la flora nativa es endémica, con ejemplos como el árbol de cinchona, miles de orquídeas únicas de un solo valle andino, y la palma de ramos (Ceroxylon) de los bosques nublados. Esta riqueza está íntimamente ligada al agua: los páramos y bosques nublados actúan como esponjas que capturan niebla y alimentan los ríos.",
@@ -72,6 +84,7 @@ const temasUnidadDos: Tema[] = [
   },
   {
     titulo: "Tema 2.4: Extinción de las Especies",
+    imagen: tema24Img,
     subtitulo: "(Principales amenazas para la pérdida de la biodiversidad)",
     descripcion:
       "La extinción es la desaparición permanente de una especie: se pierde su información genética y su rol dentro del ecosistema para siempre. El Ecuador enfrenta una de las tasas de deforestación más altas de Sudamérica, y las Listas Rojas de la UICN registran cientos de especies amenazadas. El cóndor andino sobrevive con menos de 100 individuos en el país, las ranas doradas han desaparecido de muchos de sus bosques por el hongo quitridio, y el manglar ha perdido gran parte de su superficie histórica frente al camaronerismo.",
@@ -91,6 +104,7 @@ const temasUnidadDos: Tema[] = [
 const temasUnidadTres: Tema[] = [
   {
     titulo: "Tema 3.1: Ámbito legal y normativa ecuatoriana",
+    imagen: tema31Img,
     subtitulo: "(Tratamiento constitucional y desarrollo normativo)",
     descripcion:
       "La Constitución de 2008 fue la primera del mundo en reconocer derechos a la propia Naturaleza o Pacha Mama (arts. 71–74): el derecho a que se respete integralmente su existencia y al mantenimiento y regeneración de sus ciclos vitales. La Constitución establece el Buen Vivir (sumak kawsay) como paradigma, declara de interés público la conservación del ambiente y prohíbe en zonas protegidas la actividad extractiva no sostenible. Sobre esta base se ha construido un cuerpo normativo que ordena la gestión ambiental y traduce los compromisos internacionales a leyes nacionales.",
@@ -106,6 +120,7 @@ const temasUnidadTres: Tema[] = [
   },
   {
     titulo: "Tema 3.2: Sistema Nacional de Áreas Protegidas - SNAP",
+    imagen: tema32Img,
     subtitulo: "(Ordenamiento territorial y estrategias de manejo)",
     descripcion:
       "El SNAP agrupa todas las áreas protegidas del territorio continental e insular bajo criterios comunes de ordenamiento y manejo. Su núcleo es el Patrimonio de Áreas Naturales del Estado (PANE), integrado por cerca de 81 áreas oficiales que protegen muestras representativas de la biodiversidad nacional: Galápagos y Yasuní (Patrimonio Mundial de la UNESCO), Cotopaxi, Cajas, Sumaco, Podocarpus y decenas de parques y reservas más. Cada área se administra mediante un plan de manejo que define objetivos de conservación, zonificación, usos permitidos y programas de investigación y turismo controlado.",
@@ -121,6 +136,7 @@ const temasUnidadTres: Tema[] = [
   },
   {
     titulo: "Tema 3.3: Extinción de especies",
+    imagen: tema33Img,
     subtitulo: "(Estrategias de conservación in situ y ex situ)",
     descripcion:
       "La conservación in situ protege a las especies dentro de su hábitat natural: es la estrategia prioritaria porque mantiene procesos ecológicos completos (polinización, depredación, dispersión de semillas). La conservación ex situ interviene cuando la población silvestre está demasiado reducida: traslada individuos o material genético fuera del hábitat para resguardarlo y, eventualmente, reintroducirlo. Ambas estrategias se complementan y deben planificarse con ciencia, financiamiento sostenible y participación social.",
@@ -136,6 +152,7 @@ const temasUnidadTres: Tema[] = [
   },
   {
     titulo: "Tema 3.4: Estrategias y manejo de conservación",
+    imagen: tema34Img,
     subtitulo: "(Clasificación, estructura del SNAP y el rol de las comunidades)",
     descripcion:
       "La conservación moderna ya no consiste solo en cercar territorios: es una estrategia social y territorial. El manejo del SNAP combina la clasificación científica de áreas, planes de manejo con zonificación, financiamiento sostenible y, sobre todo, el rol activo de las comunidades y nacionalidades indígenas que han habitado y protegido estos territorios durante milenios. Los pueblos amazónicos, los comunes de agua y bosque y las comunidades pesqueras demuestran que el conocimiento ancestral y la gobernanza local son los mejores guardianes de la biodiversidad.",
