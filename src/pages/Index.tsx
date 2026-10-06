@@ -4,6 +4,8 @@ import {
   Check,
   Circle,
   ClipboardList,
+  ExternalLink,
+  Satellite,
   Leaf,
   ShieldCheck,
   Sparkles,
@@ -322,6 +324,28 @@ const TopicGrid = ({ topics, accent, hecho, links }: TopicGridProps) => (
               <span className="font-bold uppercase tracking-wide">Dato clave: </span>
               {topic.datoClave}
             </p>
+          </div>
+          <div className="space-y-3 border-t pt-5">
+            <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">Recursos Externos</p>
+            <div className="flex flex-wrap gap-3">
+              {links.map((link) => (
+                <a
+                  key={link.url}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(
+                    "inline-flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-semibold transition-colors",
+                    accent === "jungle"
+                      ? "border-jungle/40 text-jungle hover:bg-jungle hover:text-card"
+                      : "border-ocean/40 text-ocean hover:bg-ocean hover:text-card",
+                  )}
+                >
+                  <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                  {link.label}
+                </a>
+              ))}
+            </div>
           </div>
         </CardContent>
       </Card>
