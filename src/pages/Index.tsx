@@ -169,38 +169,87 @@ const temasUnidadTres: Tema[] = [
   },
 ];
 
+const hechoUnidadDos =
+  "El Ecuador alberga el 16 % de las especies de aves del mundo, el 8 % de los anfibios y más de 25.000 especies de plantas descritas, distribuidas en 91 ecosistemas distintos.";
+const hechoUnidadTres =
+  "El SNAP es la estrategia de conservación in situ más efectiva del país: cubre el 20,3 % del territorio continental y el 12,07 % del área marina, con 60 áreas protegidas.";
+
+interface Recurso {
+  label: string;
+  url: string;
+}
+
+const linksUnidadDos: Recurso[] = [
+  { label: "BioWeb Geografía y Clima", url: "https://bioweb.bio/faunaweb/amphibiaweb/GeografiaClima/" },
+  {
+    label: "Zonas Climáticas EC",
+    url: "http://www.forosecuador.ec/forum/ecuador/educaci%C3%B3n-y-ciencia/12571-zonas-clim%C3%A1ticas-del-ecuador",
+  },
+];
+const linksUnidadTres: Recurso[] = [
+  { label: "Sistema Nacional de Áreas Protegidas (MAATE)", url: "http://areasprotegidas.ambiente.gob.ec/es/info-snap" },
+  {
+    label: "Ley Forestal y Conservación",
+    url: "http://www.prolipa.com.ec/blog/wp-content/uploads/2017/08/Leyparalaconservacion.pdf",
+  },
+];
+
 const guias = [
-  "Guía 1: Modelamiento de Nichos y Distribución Espacial de Especies Endémicas en el Ecuador.",
-  "Guía 2: Análisis Temporal (Timelapse) de las Amenazas a la Biodiversidad y Deforestación.",
-  "Guía 3: Análisis Cartográfico de los Límites y Cobertura del Sistema Nacional de Áreas Protegidas.",
-  "Guía 4: Análisis de Superposición Espacial: Conflictos Territoriales y Zonas de Amortiguamiento Community-Led.",
+  {
+    titulo: "Guía 1: Modelamiento de Nichos y Distribución Espacial de Especies Endémicas en el Ecuador.",
+    url: "https://earth.google.com/web/",
+    instruccion:
+      "Usa la vista satelital de Google Earth para geolocalizar los pisos climáticos. IMPORTANTE: Enfócate solo en la especie endémica asignada. No satures el mapa visualmente.",
+  },
+  {
+    titulo: "Guía 2: Análisis Temporal (Timelapse) de las Amenazas a la Biodiversidad y Deforestación.",
+    url: "https://worldview.earthdata.nasa.gov/",
+    instruccion:
+      "Activa las capas temporales de NASA Worldview (Timelapse). Analiza las zonas de deforestación enfocándote en un solo cuadrante a la vez para reducir la carga cognitiva.",
+  },
+  {
+    titulo: "Guía 3: Análisis Cartográfico de los Límites y Cobertura del Sistema Nacional de Áreas Protegidas.",
+    url: "http://ide.ambiente.gob.ec/mapainteractivo/",
+    instruccion:
+      "Usa el visor oficial del MAATE. Activa únicamente la capa de la zona de estudio para evitar aglomeración visual de los 60 puntos del SNAP.",
+  },
+  {
+    titulo: "Guía 4: Análisis de Superposición Espacial: Conflictos Territoriales y Zonas de Amortiguamiento Community-Led.",
+    url: "https://www.openstreetmap.org/",
+    instruccion:
+      "Utiliza el mapa colaborativo de OpenStreetMap para identificar las presiones antrópicas cercanas a la zona de amortiguamiento seleccionada.",
+  },
 ];
 
 interface TopicGridProps {
   topics: Tema[];
   accent: "jungle" | "ocean";
+  hecho: string;
+  links: Recurso[];
 }
 
-const TopicGrid = ({ topics, accent }: TopicGridProps) => (
+const TopicGrid = ({ topics, accent, hecho, links }: TopicGridProps) => (
   <div className="grid gap-8 lg:grid-cols-2">
     {topics.map((topic, index) => (
       <Card
         key={topic.titulo}
         className={cn(
-          "relative overflow-hidden border bg-card shadow-sm transition-transform duration-300 hover:-translate-y-1 hover:shadow-md",
+          "relative flex flex-col overflow-hidden border bg-card shadow-sm transition-transform duration-300 hover:-translate-y-1 hover:shadow-md",
           accent === "jungle" ? "border-jungle/25" : "border-ocean/25",
         )}
       >
         <div className={cn("h-1.5", accent === "jungle" ? "bg-jungle" : "bg-ocean")} />
-        <img
-          src={topic.imagen}
-          alt=""
-          aria-hidden="true"
-          loading="lazy"
-          width={1024}
-          height={768}
-          className="pointer-events-none absolute bottom-0 right-0 w-3/5 select-none object-cover opacity-45 mix-blend-multiply"
-        />
+        <div className="relative h-48 overflow-hidden sm:h-56">
+          <img
+            src={topic.imagen}
+            alt={`Ilustración de ${topic.titulo}`}
+            loading="lazy"
+            width={1024}
+            height={768}
+            className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+          />
+          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-card to-transparent" />
+        </div>
         <CardHeader className="relative gap-6 p-7 sm:p-9">
           <div className="flex items-start justify-between gap-4">
             <div
@@ -227,6 +276,14 @@ const TopicGrid = ({ topics, accent }: TopicGridProps) => (
             </p>
           </div>
           <p className="text-base leading-relaxed text-muted-foreground">{topic.descripcion}</p>
+          <p
+            className={cn(
+              "border-l-4 pl-4 text-sm font-medium leading-relaxed text-foreground",
+              accent === "jungle" ? "border-jungle" : "border-ocean",
+            )}
+          >
+            {hecho}
+          </p>
         </CardHeader>
         <CardContent className="relative space-y-6 p-7 pt-0 sm:p-9 sm:pt-0">
           <ul className="space-y-3">
@@ -363,7 +420,7 @@ const Index = () => {
                     </div>
                   </div>
                 </div>
-                <TopicGrid topics={temasUnidadDos} accent="jungle" />
+                <TopicGrid topics={temasUnidadDos} accent="jungle" hecho={hechoUnidadDos} links={linksUnidadDos} />
               </div>
             </section>
           </TabsContent>
@@ -395,7 +452,7 @@ const Index = () => {
                     </div>
                   </div>
                 </div>
-                <TopicGrid topics={temasUnidadTres} accent="ocean" />
+                <TopicGrid topics={temasUnidadTres} accent="ocean" hecho={hechoUnidadTres} links={linksUnidadTres} />
               </div>
             </section>
           </TabsContent>
@@ -421,7 +478,7 @@ const Index = () => {
 
                     return (
                       <Card
-                        key={guia}
+                        key={guia.titulo}
                         className={cn(
                           "flex min-h-64 flex-col overflow-hidden border-paramo/30 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md",
                           completed && "border-paramo bg-paramo/5",
@@ -437,9 +494,22 @@ const Index = () => {
                               {String(index + 1).padStart(2, "0")}
                             </span>
                           </div>
-                          <CardTitle className="text-lg leading-relaxed sm:text-xl">{guia}</CardTitle>
+                          <CardTitle className="text-lg leading-relaxed sm:text-xl">{guia.titulo}</CardTitle>
+                          <div className="rounded-md border border-paramo/25 bg-paramo/5 p-4">
+                            <p className="mb-1 text-xs font-bold uppercase tracking-wide text-paramo">
+                              Instrucciones
+                            </p>
+                            <p className="text-sm leading-relaxed text-foreground/90">{guia.instruccion}</p>
+                          </div>
                         </CardHeader>
-                        <CardContent className="p-7 pt-0 sm:p-8 sm:pt-0">
+                        <CardContent className="space-y-3 p-7 pt-0 sm:p-8 sm:pt-0">
+                          <Button asChild className="h-12 w-full bg-paramo text-base font-bold text-paramo-foreground shadow-md hover:bg-paramo/90">
+                            <a href={guia.url} target="_blank" rel="noopener noreferrer">
+                              <Satellite className="h-5 w-5" aria-hidden="true" />
+                              🚀 Abrir Visor Satelital
+                              <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                            </a>
+                          </Button>
                           <Button
                             type="button"
                             variant={completed ? "outline" : "default"}
