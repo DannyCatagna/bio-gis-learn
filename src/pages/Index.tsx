@@ -187,12 +187,21 @@ const TopicGrid = ({ topics, accent }: TopicGridProps) => (
       <Card
         key={topic.titulo}
         className={cn(
-          "overflow-hidden border bg-card shadow-sm transition-transform duration-300 hover:-translate-y-1 hover:shadow-md",
+          "relative overflow-hidden border bg-card shadow-sm transition-transform duration-300 hover:-translate-y-1 hover:shadow-md",
           accent === "jungle" ? "border-jungle/25" : "border-ocean/25",
         )}
       >
         <div className={cn("h-1.5", accent === "jungle" ? "bg-jungle" : "bg-ocean")} />
-        <CardHeader className="gap-6 p-7 sm:p-9">
+        <img
+          src={topic.imagen}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          width={1024}
+          height={768}
+          className="pointer-events-none absolute bottom-0 right-0 w-3/5 select-none object-cover opacity-45 mix-blend-multiply"
+        />
+        <CardHeader className="relative gap-6 p-7 sm:p-9">
           <div className="flex items-start justify-between gap-4">
             <div
               className={cn(
@@ -219,7 +228,7 @@ const TopicGrid = ({ topics, accent }: TopicGridProps) => (
           </div>
           <p className="text-base leading-relaxed text-muted-foreground">{topic.descripcion}</p>
         </CardHeader>
-        <CardContent className="space-y-6 p-7 pt-0 sm:p-9 sm:pt-0">
+        <CardContent className="relative space-y-6 p-7 pt-0 sm:p-9 sm:pt-0">
           <ul className="space-y-3">
             {topic.puntos.map((punto) => (
               <li key={punto} className="flex items-start gap-3">
