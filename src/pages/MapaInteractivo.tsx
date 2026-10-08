@@ -30,7 +30,7 @@ type Category =
   | "Áreas Protegidas Privadas"
   | "Áreas Protegidas Comunitarias";
 
-interface ProtectedArea {
+export interface ProtectedArea {
   id: string;
   name: string;
   category: Category;
@@ -552,7 +552,7 @@ const extraAreas: ProtectedArea[] = [
   mk("A.P.C. Kawsak Sacha (Sarayaku)", "Áreas Protegidas Comunitarias", [-1.73, -77.48], "Selva Viviente del pueblo kichwa de Sarayaku, Pastaza.", "Subsistema comunitario"),
 ];
 
-const areas: ProtectedArea[] = [...baseAreas, ...extraAreas];
+export const areas: ProtectedArea[] = [...baseAreas, ...extraAreas];
 
 const categories: Category[] = [
   "Parques Nacionales",

@@ -236,7 +236,7 @@ const TopicGrid = ({ topics, accent, hecho, links }: TopicGridProps) => (
       <Card
         key={topic.titulo}
         className={cn(
-          "relative flex flex-col overflow-hidden border bg-card shadow-sm transition-transform duration-300 hover:-translate-y-1 hover:shadow-md",
+          "relative flex flex-col overflow-hidden border bg-card/70 shadow-lg backdrop-blur-md transition-transform duration-300 hover:-translate-y-1 hover:shadow-md",
           accent === "jungle" ? "border-jungle/25" : "border-ocean/25",
         )}
       >
