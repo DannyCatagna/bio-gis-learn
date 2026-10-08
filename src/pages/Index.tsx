@@ -5,6 +5,7 @@ import {
   Circle,
   ClipboardList,
   ExternalLink,
+  Globe2,
   Satellite,
   Leaf,
   ShieldCheck,
@@ -25,6 +26,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
+import MapaSatelital from "@/components/dashboard/MapaSatelital";
 
 interface Tema {
   titulo: string;
@@ -236,7 +239,7 @@ const TopicGrid = ({ topics, accent, hecho, links }: TopicGridProps) => (
       <Card
         key={topic.titulo}
         className={cn(
-          "relative flex flex-col overflow-hidden border bg-card shadow-sm transition-transform duration-300 hover:-translate-y-1 hover:shadow-md",
+          "relative flex flex-col overflow-hidden border bg-card/70 shadow-lg backdrop-blur-md transition-transform duration-300 hover:-translate-y-1 hover:shadow-md",
           accent === "jungle" ? "border-jungle/25" : "border-ocean/25",
         )}
       >
@@ -353,216 +356,244 @@ const TopicGrid = ({ topics, accent, hecho, links }: TopicGridProps) => (
   </div>
 );
 
+const glass = "rounded-2xl border border-card/40 bg-card/70 shadow-lg backdrop-blur-md";
+
+const plataformas = [
+  {
+    nombre: "Google Earth",
+    url: "https://earth.google.com/web/",
+    uso: "Globo virtual con imágenes satelitales en 3D. Permite buscar lugares, trazar rutas y polígonos, medir distancias y explorar el relieve sin instalar nada.",
+  },
+  {
+    nombre: "NASA Worldview",
+    url: "https://worldview.earthdata.nasa.gov/",
+    uso: "Imágenes satelitales diarias de la NASA. Su línea de tiempo permite comparar fechas y observar cambios como incendios, nubosidad o pérdida de cobertura vegetal.",
+  },
+  {
+    nombre: "Visor interactivo del MAATE",
+    url: "http://ide.ambiente.gob.ec/mapainteractivo/",
+    uso: "Visor oficial del Ministerio de Ambiente, Agua y Transición Ecológica. Muestra capas del SNAP, bosques protectores y cobertura vegetal; se activan una a una desde el panel de capas.",
+  },
+];
+
+const bibliografia = [
+  "Alcántara Manzanares, J., & Medina Quintana, S. (2019). Google Earth como herramienta para formadores en la preparación de itinerarios didácticos orientados a la educación ambiental. Enseñanza de las Ciencias, 37(2), 173-188.",
+  "Fast, V., & Hossain, F. (2020). An Alternative to Desktop GIS? Evaluating the Cartographic and Analytical Capabilities of WebGIS Platforms for Teaching. The Cartographic Journal, 57(2), 175-186.",
+  "Mestanza-Ramón, C., et al. (2020). In-Situ and Ex-Situ Biodiversity Conservation in Ecuador: A Review of Policies, Actions and Challenges. Diversity, 12(8), 315.",
+  "Schulze, U. (2020). GIS works—But why, how, and for whom? Findings from a systematic review. Transactions in GIS, 24(3), 515–546.",
+];
+
+interface GuideCardsProps {
+  indices: number[];
+  completed: number[];
+  onToggle: (i: number) => void;
+}
+
+const GuideCards = ({ indices, completed, onToggle }: GuideCardsProps) => (
+  <div className="grid gap-6 lg:grid-cols-2">
+    {indices.map((index) => {
+      const guia = guias[index];
+      const done = completed.includes(index);
+      return (
+        <Card key={guia.titulo} className={cn(glass, "flex flex-col overflow-hidden border-paramo/40", done && "border-paramo")}>
+          <div className="h-1.5 bg-paramo" />
+          <CardHeader className="flex-1 gap-5 p-7">
+            <div className="grid h-12 w-12 place-items-center rounded-md bg-paramo/10 text-paramo">
+              <ClipboardList className="h-6 w-6" aria-hidden="true" />
+            </div>
+            <CardTitle className="text-lg leading-relaxed">{guia.titulo}</CardTitle>
+            <div className="rounded-md border border-paramo/25 bg-paramo/5 p-4">
+              <p className="mb-1 text-xs font-bold uppercase tracking-wide text-paramo">Instrucciones</p>
+              <p className="text-sm leading-relaxed">{guia.instruccion}</p>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-3 p-7 pt-0">
+            <Button asChild className="h-12 w-full bg-paramo font-bold text-paramo-foreground hover:bg-paramo/90">
+              <a href={guia.url} target="_blank" rel="noopener noreferrer">
+                <Satellite className="h-5 w-5" aria-hidden="true" />
+                🚀 Abrir Visor Satelital
+              </a>
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onToggle(index)}
+              aria-pressed={done}
+              className="w-full border-paramo text-paramo hover:bg-paramo/10 hover:text-paramo"
+            >
+              {done ? <Check className="h-4 w-4" /> : <Circle className="h-4 w-4" />}
+              {done ? "Completada" : "Marcar como completada"}
+            </Button>
+          </CardContent>
+        </Card>
+      );
+    })}
+  </div>
+);
+
+const SectionTitle = ({ kicker, title, color }: { kicker: string; title: string; color: string }) => (
+  <div className={cn("mb-10 border-l-4 pl-5", color)}>
+    <p className="text-sm font-semibold uppercase tracking-wide">{kicker}</p>
+    <h2 className="mt-2 text-3xl font-bold leading-tight text-foreground md:text-4xl">{title}</h2>
+  </div>
+);
+
 const Index = () => {
   const [completedGuides, setCompletedGuides] = useState<number[]>([]);
+  const toggleGuide = (i: number) =>
+    setCompletedGuides((c) => (c.includes(i) ? c.filter((x) => x !== i) : [...c, i]));
 
-  const toggleGuide = (guideIndex: number) => {
-    setCompletedGuides((current) =>
-      current.includes(guideIndex)
-        ? current.filter((index) => index !== guideIndex)
-        : [...current, guideIndex],
-    );
-  };
+  const tabs = [
+    { value: "inicio", label: "🏠 Inicio" },
+    { value: "panel", label: "📖 Panel Pedagógico" },
+    { value: "mapa", label: "🗺️ Mapa Interactivo" },
+    { value: "evaluacion", label: "📝 Evaluación" },
+    { value: "bibliografia", label: "📚 Bibliografía" },
+  ];
 
   return (
-    <div className="min-h-[calc(100vh-4rem)]">
-      <main>
-        <header className="relative overflow-hidden border-b bg-card px-5 py-10 sm:px-8 md:px-12 md:py-14">
-          <img
-            src={fondoEcuador}
-            alt=""
-            aria-hidden="true"
-            loading="lazy"
-            width={1920}
-            height={1088}
-            className="absolute inset-0 h-full w-full object-cover opacity-30"
-          />
-          <div className="relative mx-auto max-w-6xl">
-            <div className="flex items-center gap-4">
-              <div className="grid h-12 w-12 shrink-0 place-items-center rounded-md bg-jungle text-jungle-foreground">
-                <Leaf className="h-6 w-6" aria-hidden="true" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold uppercase text-jungle">BIOSIG</p>
-                <h1 className="mt-1 text-2xl font-bold sm:text-3xl">Panel pedagógico</h1>
-              </div>
+    <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+        <img src={fondoEcuador} alt="" className="h-full w-full object-cover opacity-40" />
+        <div className="absolute -left-32 top-10 h-[28rem] w-[28rem] rounded-full bg-jungle/40 blur-3xl" />
+        <div className="absolute right-0 top-1/3 h-[32rem] w-[32rem] rounded-full bg-ocean/40 blur-3xl" />
+        <div className="absolute bottom-0 left-1/3 h-[26rem] w-[26rem] rounded-full bg-paramo/35 blur-3xl" />
+      </div>
+
+      <Tabs defaultValue="inicio" className="w-full">
+        <div className="sticky top-16 z-20 px-4 py-4 sm:px-8">
+          <TabsList className={cn(glass, "mx-auto flex h-auto max-w-6xl flex-wrap justify-center gap-2 p-2")}>
+            {tabs.map((t) => (
+              <TabsTrigger
+                key={t.value}
+                value={t.value}
+                className="min-h-11 px-4 text-sm font-semibold data-[state=active]:bg-jungle data-[state=active]:text-jungle-foreground"
+              >
+                {t.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </div>
+
+        <div className="mx-auto max-w-6xl px-5 pb-20 pt-8 sm:px-8">
+          <TabsContent value="inicio" className="m-0 space-y-10">
+            <div className={cn(glass, "p-8 md:p-12")}>
+              <p className="text-sm font-semibold uppercase tracking-wide text-jungle">BIOSIG</p>
+              <h1 className="mt-2 text-3xl font-bold md:text-5xl">Sistemas de Información Geográfica para la educación</h1>
+              <p className="mt-6 max-w-3xl text-lg leading-relaxed text-muted-foreground">
+                Un SIG es un potente conjunto de herramientas para recolectar, almacenar, transformar y desplegar datos
+                geoespaciales del mundo real. Permite relacionar la información con su ubicación y analizar patrones en
+                el territorio.
+              </p>
+              <p className="mt-4 max-w-3xl text-lg leading-relaxed text-muted-foreground">
+                Tradicionalmente, el SIG de escritorio requería instalar programas especializados y equipos potentes. Las
+                plataformas WebGIS trasladan esas capacidades al navegador: son gratuitas, no requieren instalación y
+                facilitan su uso en el aula.
+              </p>
             </div>
-          </div>
-        </header>
+            <div className="grid gap-6 md:grid-cols-3">
+              {plataformas.map((p) => (
+                <div key={p.nombre} className={cn(glass, "flex flex-col p-7")}>
+                  <Globe2 className="h-8 w-8 text-ocean" aria-hidden="true" />
+                  <h3 className="mt-4 text-xl font-bold">{p.nombre}</h3>
+                  <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">{p.uso}</p>
+                  <a
+                    href={p.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-ocean hover:underline"
+                  >
+                    Abrir plataforma <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                  </a>
+                </div>
+              ))}
+            </div>
+          </TabsContent>
 
-        <Tabs defaultValue="unidad-2" className="w-full">
-          <div className="sticky top-16 z-20 border-b bg-card/95 px-4 py-4 backdrop-blur sm:px-8 md:px-12">
-            <TabsList className="mx-auto grid h-auto max-w-6xl grid-cols-1 gap-2 bg-muted p-2 md:grid-cols-3">
-              <TabsTrigger
-                value="unidad-2"
-                className="min-h-14 whitespace-normal px-4 py-3 text-left leading-snug data-[state=active]:bg-jungle data-[state=active]:text-jungle-foreground"
-              >
-                <BookOpen className="h-5 w-5 shrink-0" aria-hidden="true" />
-                Unidad 2: Ecuador, País Megadiverso
-              </TabsTrigger>
-              <TabsTrigger
-                value="unidad-3"
-                className="min-h-14 whitespace-normal px-4 py-3 text-left leading-snug data-[state=active]:bg-ocean data-[state=active]:text-ocean-foreground"
-              >
-                <ShieldCheck className="h-5 w-5 shrink-0" aria-hidden="true" />
-                Unidad 3: Conservación de la Biodiversidad en el Ecuador
-              </TabsTrigger>
-              <TabsTrigger
-                value="guias"
-                className="min-h-14 whitespace-normal px-4 py-3 text-left leading-snug data-[state=active]:bg-paramo data-[state=active]:text-paramo-foreground"
-              >
-                <ClipboardList className="h-5 w-5 shrink-0" aria-hidden="true" />
-                Guías Didácticas (Hojas de Trabajo SIG)
-              </TabsTrigger>
-            </TabsList>
-          </div>
-
-          <TabsContent value="unidad-2" className="m-0 focus-visible:ring-jungle">
-            <section className="px-5 py-14 sm:px-8 md:px-12 md:py-20" aria-labelledby="unidad-dos-title">
-              <div className="mx-auto max-w-6xl">
-                <div className="relative mb-10 overflow-hidden rounded-xl shadow-md md:mb-14">
-                  <img
-                    src={unidadDosImg}
-                    alt="Flora y fauna representativa del Ecuador megadiverso: gallito de la roca, colibrí, oso de anteojos y volcanes andinos"
-                    loading="lazy"
-                    width={1920}
-                    height={560}
-                    className="h-56 w-full object-cover md:h-72"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-r from-jungle/90 via-jungle/60 to-transparent" />
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="px-7 md:px-12">
-                      <p className="text-sm font-semibold uppercase tracking-wide text-card/90">
-                        Unidad 2
-                      </p>
-                      <h2
-                        id="unidad-dos-title"
-                        className="mt-2 max-w-xl text-3xl font-bold leading-tight text-card drop-shadow-sm md:text-4xl"
-                      >
-                        Ecuador, País Megadiverso
-                      </h2>
-                    </div>
+          <TabsContent value="panel" className="m-0">
+            <Tabs defaultValue="u2">
+              <TabsList className={cn(glass, "mb-10 grid h-auto grid-cols-1 gap-2 p-2 md:grid-cols-2")}>
+                <TabsTrigger value="u2" className="min-h-12 whitespace-normal data-[state=active]:bg-jungle data-[state=active]:text-jungle-foreground">
+                  <BookOpen className="h-4 w-4" /> Unidad 2: Ecuador, País Megadiverso
+                </TabsTrigger>
+                <TabsTrigger value="u3" className="min-h-12 whitespace-normal data-[state=active]:bg-ocean data-[state=active]:text-ocean-foreground">
+                  <ShieldCheck className="h-4 w-4" /> Unidad 3: Conservación de la Biodiversidad
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="u2" className="m-0 space-y-14">
+                <div className="relative overflow-hidden rounded-2xl shadow-md">
+                  <img src={unidadDosImg} alt="Flora y fauna del Ecuador" className="h-56 w-full object-cover md:h-64" />
+                  <div className="absolute inset-0 flex items-center bg-gradient-to-r from-jungle/90 via-jungle/60 to-transparent px-8">
+                    <h2 className="max-w-xl text-3xl font-bold text-card md:text-4xl">Ecuador, País Megadiverso</h2>
                   </div>
                 </div>
                 <TopicGrid topics={temasUnidadDos} accent="jungle" hecho={hechoUnidadDos} links={linksUnidadDos} />
-              </div>
-            </section>
-          </TabsContent>
-
-          <TabsContent value="unidad-3" className="m-0 bg-muted/60 focus-visible:ring-ocean">
-            <section className="px-5 py-14 sm:px-8 md:px-12 md:py-20" aria-labelledby="unidad-tres-title">
-              <div className="mx-auto max-w-6xl">
-                <div className="relative mb-10 overflow-hidden rounded-xl shadow-md md:mb-14">
-                  <img
-                    src={unidadTresImg}
-                    alt="Guardaparques y comunidades ecuatorianas sembrando especies nativas, con el cóndor andino volando sobre el paisaje"
-                    loading="lazy"
-                    width={1920}
-                    height={560}
-                    className="h-56 w-full object-cover md:h-72"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-r from-ocean/90 via-ocean/60 to-transparent" />
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="px-7 md:px-12">
-                      <p className="text-sm font-semibold uppercase tracking-wide text-card/90">
-                        Unidad 3
-                      </p>
-                      <h2
-                        id="unidad-tres-title"
-                        className="mt-2 max-w-xl text-3xl font-bold leading-tight text-card drop-shadow-sm md:text-4xl"
-                      >
-                        Conservación de la Biodiversidad en el Ecuador
-                      </h2>
-                    </div>
+                <div>
+                  <SectionTitle kicker="Guías de la Unidad 2" title="Hojas de Trabajo SIG" color="border-paramo text-paramo" />
+                  <GuideCards indices={[0, 1]} completed={completedGuides} onToggle={toggleGuide} />
+                </div>
+              </TabsContent>
+              <TabsContent value="u3" className="m-0 space-y-14">
+                <div className="relative overflow-hidden rounded-2xl shadow-md">
+                  <img src={unidadTresImg} alt="Comunidades y guardaparques conservando" className="h-56 w-full object-cover md:h-64" />
+                  <div className="absolute inset-0 flex items-center bg-gradient-to-r from-ocean/90 via-ocean/60 to-transparent px-8">
+                    <h2 className="max-w-xl text-3xl font-bold text-card md:text-4xl">Conservación de la Biodiversidad en el Ecuador</h2>
                   </div>
                 </div>
                 <TopicGrid topics={temasUnidadTres} accent="ocean" hecho={hechoUnidadTres} links={linksUnidadTres} />
-              </div>
-            </section>
+                <div>
+                  <SectionTitle kicker="Guías de la Unidad 3" title="Hojas de Trabajo SIG" color="border-paramo text-paramo" />
+                  <GuideCards indices={[2, 3]} completed={completedGuides} onToggle={toggleGuide} />
+                </div>
+              </TabsContent>
+            </Tabs>
           </TabsContent>
 
-          <TabsContent value="guias" className="m-0 focus-visible:ring-paramo">
-            <section className="px-5 py-14 sm:px-8 md:px-12 md:py-20" aria-labelledby="guias-title">
-              <div className="mx-auto max-w-6xl">
-                <div className="mb-10 flex flex-col gap-5 border-l-4 border-paramo pl-5 sm:flex-row sm:items-end sm:justify-between md:mb-14 md:pl-7">
-                  <div>
-                    <p className="text-sm font-semibold uppercase text-paramo">Retos constructivistas</p>
-                    <h2 id="guias-title" className="mt-2 text-3xl font-bold leading-tight md:text-4xl">
-                      Guías Didácticas (Hojas de Trabajo SIG)
-                    </h2>
-                  </div>
-                  <p className="text-sm font-semibold text-paramo" aria-live="polite">
-                    {completedGuides.length} de {guias.length} completadas
-                  </p>
-                </div>
-
-                <div className="grid gap-6 lg:grid-cols-2">
-                  {guias.map((guia, index) => {
-                    const completed = completedGuides.includes(index);
-
-                    return (
-                      <Card
-                        key={guia.titulo}
-                        className={cn(
-                          "flex min-h-64 flex-col overflow-hidden border-paramo/30 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md",
-                          completed && "border-paramo bg-paramo/5",
-                        )}
-                      >
-                        <div className="h-1.5 bg-paramo" />
-                        <CardHeader className="flex-1 gap-6 p-7 sm:p-8">
-                          <div className="flex items-center justify-between gap-4">
-                            <div className="grid h-12 w-12 place-items-center rounded-md bg-paramo/10 text-paramo">
-                              <ClipboardList className="h-6 w-6" aria-hidden="true" />
-                            </div>
-                            <span className="text-sm font-bold text-paramo">
-                              {String(index + 1).padStart(2, "0")}
-                            </span>
-                          </div>
-                          <CardTitle className="text-lg leading-relaxed sm:text-xl">{guia.titulo}</CardTitle>
-                          <div className="rounded-md border border-paramo/25 bg-paramo/5 p-4">
-                            <p className="mb-1 text-xs font-bold uppercase tracking-wide text-paramo">
-                              Instrucciones
-                            </p>
-                            <p className="text-sm leading-relaxed text-foreground/90">{guia.instruccion}</p>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="space-y-3 p-7 pt-0 sm:p-8 sm:pt-0">
-                          <Button asChild className="h-12 w-full bg-paramo text-base font-bold text-paramo-foreground shadow-md hover:bg-paramo/90">
-                            <a href={guia.url} target="_blank" rel="noopener noreferrer">
-                              <Satellite className="h-5 w-5" aria-hidden="true" />
-                              🚀 Abrir Visor Satelital
-                              <ExternalLink className="h-4 w-4" aria-hidden="true" />
-                            </a>
-                          </Button>
-                          <Button
-                            type="button"
-                            variant={completed ? "outline" : "default"}
-                            onClick={() => toggleGuide(index)}
-                            aria-pressed={completed}
-                            className={cn(
-                              "w-full border-paramo",
-                              completed
-                                ? "text-paramo hover:bg-paramo/10 hover:text-paramo"
-                                : "bg-paramo text-paramo-foreground hover:bg-paramo/90",
-                            )}
-                          >
-                            {completed ? (
-                              <Check className="h-4 w-4" aria-hidden="true" />
-                            ) : (
-                              <Circle className="h-4 w-4" aria-hidden="true" />
-                            )}
-                            {completed ? "Completada" : "Marcar como completada"}
-                          </Button>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
-                </div>
-              </div>
-            </section>
+          <TabsContent value="mapa" className="m-0">
+            <div className={cn(glass, "p-6 md:p-10")}>
+              <SectionTitle kicker="Vista satelital" title="Mapa Interactivo" color="border-ocean text-ocean" />
+              <MapaSatelital />
+            </div>
           </TabsContent>
-        </Tabs>
-      </main>
+
+          <TabsContent value="evaluacion" className="m-0">
+            <div className={cn(glass, "p-8 md:p-12")}>
+              <SectionTitle kicker="Evaluación" title="Progreso de las Hojas de Trabajo SIG" color="border-paramo text-paramo" />
+              <p className="text-lg font-semibold text-paramo">
+                {completedGuides.length} de {guias.length} guías completadas
+              </p>
+              <ul className="mt-6 space-y-3">
+                {guias.map((g, i) => (
+                  <li key={g.titulo} className="flex items-start gap-3 text-sm">
+                    {completedGuides.includes(i) ? (
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-jungle" />
+                    ) : (
+                      <Circle className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                    )}
+                    {g.titulo}
+                  </li>
+                ))}
+              </ul>
+              <Button asChild className="mt-8 bg-ocean text-ocean-foreground hover:bg-ocean/90">
+                <Link to="/evaluacion">Ir a la evaluación</Link>
+              </Button>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="bibliografia" className="m-0">
+            <div className={cn(glass, "p-8 md:p-12")}>
+              <SectionTitle kicker="Referencias" title="Bibliografía" color="border-jungle text-jungle" />
+              <ol className="space-y-5">
+                {bibliografia.map((ref) => (
+                  <li key={ref} className="pl-8 -indent-8 text-sm leading-relaxed">
+                    {ref}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </TabsContent>
+        </div>
+      </Tabs>
     </div>
   );
 };
