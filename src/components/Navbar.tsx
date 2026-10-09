@@ -14,6 +14,9 @@ const Navbar = () => {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // La página de inicio tiene su propio menú único de pestañas
+  if (location.pathname === "/") return null;
+
   return (
     <nav className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between">
