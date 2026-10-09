@@ -239,7 +239,7 @@ const TopicGrid = ({ topics, accent, hecho, links }: TopicGridProps) => (
       <Card
         key={topic.titulo}
         className={cn(
-          "relative flex flex-col overflow-hidden border bg-card/70 shadow-lg backdrop-blur-md transition-transform duration-300 hover:-translate-y-1 hover:shadow-md",
+          "relative flex flex-col overflow-hidden bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-md",
           accent === "jungle" ? "border-jungle/25" : "border-ocean/25",
         )}
       >
@@ -356,7 +356,7 @@ const TopicGrid = ({ topics, accent, hecho, links }: TopicGridProps) => (
   </div>
 );
 
-const glass = "rounded-2xl border border-card/40 bg-card/70 shadow-lg backdrop-blur-md";
+const glass = "rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)]";
 
 const plataformas = [
   {
@@ -452,16 +452,16 @@ const Index = () => {
   ];
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden">
+    <div className="relative isolate min-h-screen overflow-hidden">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
-        <img src={fondoEcuador} alt="" className="h-full w-full object-cover opacity-40" />
-        <div className="absolute -left-32 top-10 h-[28rem] w-[28rem] rounded-full bg-jungle/40 blur-3xl" />
-        <div className="absolute right-0 top-1/3 h-[32rem] w-[32rem] rounded-full bg-ocean/40 blur-3xl" />
-        <div className="absolute bottom-0 left-1/3 h-[26rem] w-[26rem] rounded-full bg-paramo/35 blur-3xl" />
+        <img src={fondoEcuador} alt="" className="h-full w-full object-cover opacity-25" />
+        <div className="absolute -left-32 top-10 h-[28rem] w-[28rem] rounded-full bg-jungle/70 blur-3xl" />
+        <div className="absolute right-0 top-1/3 h-[32rem] w-[32rem] rounded-full bg-ocean/70 blur-3xl" />
+        <div className="absolute bottom-0 left-1/3 h-[26rem] w-[26rem] rounded-full bg-paramo/60 blur-3xl" />
       </div>
 
       <Tabs defaultValue="inicio" className="w-full">
-        <div className="sticky top-16 z-20 px-4 py-4 sm:px-8">
+        <div className="sticky top-0 z-20 px-4 py-4 sm:px-8">
           <TabsList className={cn(glass, "mx-auto flex h-auto max-w-6xl flex-wrap justify-center gap-2 p-2")}>
             {tabs.map((t) => (
               <TabsTrigger
