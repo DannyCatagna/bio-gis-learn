@@ -1,9 +1,11 @@
 import { useState } from "react";
 import {
+  ArrowRight,
   BookOpen,
   Check,
   Circle,
   ClipboardList,
+  Compass,
   ExternalLink,
   Globe2,
   Satellite,
@@ -508,9 +510,69 @@ const Index = () => {
                 </div>
               ))}
             </div>
+            <div>
+              <SectionTitle
+                kicker="Accesos rápidos"
+                title="Sigue con la introducción o con las hojas de trabajo"
+                color="border-jungle text-jungle"
+              />
+              <div className="grid gap-6 md:grid-cols-2">
+                <Link
+                  to="/introduccion"
+                  className={cn(glass, "flex items-start gap-5 p-7 transition-transform duration-300 hover:-translate-y-1")}
+                >
+                  <div className="grid h-12 w-12 shrink-0 place-items-center rounded-md bg-jungle/15 text-jungle">
+                    <Compass className="h-6 w-6" aria-hidden="true" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold">Introducción SIG</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                      ¿Qué es un SIG?, las capas y datos espaciales, y su aplicación en la conservación.
+                    </p>
+                    <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-jungle">
+                      Entrar <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                    </span>
+                  </div>
+                </Link>
+                <Link
+                  to="/guias"
+                  className={cn(glass, "flex items-start gap-5 p-7 transition-transform duration-300 hover:-translate-y-1")}
+                >
+                  <div className="grid h-12 w-12 shrink-0 place-items-center rounded-md bg-paramo/15 text-paramo">
+                    <ClipboardList className="h-6 w-6" aria-hidden="true" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold">Guías Didácticas</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                      Las cuatro hojas de trabajo SIG con su fundamento, procedimiento, recursos y evaluación.
+                    </p>
+                    <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-paramo">
+                      Abrir guías <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                    </span>
+                  </div>
+                </Link>
+              </div>
+            </div>
           </TabsContent>
 
-          <TabsContent value="panel" className="m-0">
+          <TabsContent value="panel" className="m-0 space-y-8">
+            <div className={cn(glass, "flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between")}>
+              <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Antes de empezar</p>
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  to="/introduccion"
+                  className="inline-flex min-h-11 items-center gap-2 rounded-md border border-jungle/40 px-4 py-2 text-sm font-semibold text-jungle transition-colors hover:bg-jungle hover:text-card"
+                >
+                  <Compass className="h-4 w-4" aria-hidden="true" /> Introducción SIG
+                </Link>
+                <Link
+                  to="/guias"
+                  className="inline-flex min-h-11 items-center gap-2 rounded-md border border-paramo/40 px-4 py-2 text-sm font-semibold text-paramo transition-colors hover:bg-paramo hover:text-card"
+                >
+                  <ClipboardList className="h-4 w-4" aria-hidden="true" /> Guías Didácticas
+                </Link>
+              </div>
+            </div>
             <Tabs defaultValue="u2">
               <TabsList className={cn(glass, "mb-10 grid h-auto grid-cols-1 gap-2 p-2 md:grid-cols-2")}>
                 <TabsTrigger value="u2" className="min-h-12 whitespace-normal data-[state=active]:bg-jungle data-[state=active]:text-jungle-foreground">
@@ -531,6 +593,12 @@ const Index = () => {
                 <div>
                   <SectionTitle kicker="Guías de la Unidad 2" title="Hojas de Trabajo SIG" color="border-paramo text-paramo" />
                   <GuideCards indices={[0, 1]} completed={completedGuides} onToggle={toggleGuide} />
+                  <Link
+                    to="/guias"
+                    className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-paramo hover:underline"
+                  >
+                    Ver las cuatro guías con su procedimiento completo <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </Link>
                 </div>
               </TabsContent>
               <TabsContent value="u3" className="m-0 space-y-14">
@@ -544,6 +612,12 @@ const Index = () => {
                 <div>
                   <SectionTitle kicker="Guías de la Unidad 3" title="Hojas de Trabajo SIG" color="border-paramo text-paramo" />
                   <GuideCards indices={[2, 3]} completed={completedGuides} onToggle={toggleGuide} />
+                  <Link
+                    to="/guias"
+                    className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-paramo hover:underline"
+                  >
+                    Ver las cuatro guías con su procedimiento completo <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </Link>
                 </div>
               </TabsContent>
             </Tabs>
@@ -574,9 +648,18 @@ const Index = () => {
                   </li>
                 ))}
               </ul>
-              <Button asChild className="mt-8 bg-ocean text-ocean-foreground hover:bg-ocean/90">
-                <Link to="/evaluacion">Ir a la evaluación</Link>
-              </Button>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Button asChild className="bg-ocean text-ocean-foreground hover:bg-ocean/90">
+                  <Link to="/evaluacion">Ir a la evaluación</Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="border-paramo text-paramo hover:bg-paramo/10 hover:text-paramo"
+                >
+                  <Link to="/guias">Abrir Guías Didácticas</Link>
+                </Button>
+              </div>
             </div>
           </TabsContent>
 
